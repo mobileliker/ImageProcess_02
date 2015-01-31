@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Opencv2.4.8.h"
+#include "d:\program files\opencv2.4.8\build\include\opencv2\core\core.hpp"
 
 // CImageProcessDlg dialog
 class CImageProcessDlg : public CDialogEx
@@ -34,4 +35,25 @@ public:
 	afx_msg void OnTestTest();
 	afx_msg void OnTestTestopencv();
 	void DrawPicToHDC(IplImage * img, UINT ID);
+	void ShowCurImage(const Mat);
+	afx_msg void OnFileOpenimage();
+	Mat m_src;
+	Mat m_cur;
+	Mat m_channel;
+	afx_msg void OnChannelGary();
+	afx_msg void OnHistogramShow();
+	afx_msg void OnBnClickedButtonOpen();
+
+	
+	std::vector<CString>  m_images;
+	CString m_res;
+	afx_msg void OnBnClickedButtonSave();
+	CString m_savepath;
+	CString m_openpath;
+	afx_msg void OnChannelGrayb();
+	afx_msg void OnHistogramShowb();
+	afx_msg void OnHistogramHist();
+	afx_msg void OnBinaryMode();
+	afx_msg void OnFileOpengrayimage();
+	afx_msg void OnBinaryModeb();
 };

@@ -7,6 +7,10 @@
 #include "ImageProcessDlg.h"
 #include "afxdialogex.h"
 
+#include "Channel.h"
+#include "Histogram.h"
+#include "Binary.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -52,11 +56,17 @@ CImageProcessDlg::CImageProcessDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CImageProcessDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	m_res = _T("");
+	m_savepath = _T("");
+	m_openpath = _T("");
 }
 
 void CImageProcessDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_EDIT_RES, m_res);
+	DDX_Text(pDX, IDC_EDIT_SAVEPATH, m_savepath);
+	DDX_Text(pDX, IDC_EDIT_OPENPATH, m_openpath);
 }
 
 BEGIN_MESSAGE_MAP(CImageProcessDlg, CDialogEx)
@@ -65,6 +75,17 @@ BEGIN_MESSAGE_MAP(CImageProcessDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_COMMAND(ID_TEST_TEST, &CImageProcessDlg::OnTestTest)
 	ON_COMMAND(ID_TEST_TESTOPENCV, &CImageProcessDlg::OnTestTestopencv)
+	ON_COMMAND(ID_FILE_OPENIMAGE, &CImageProcessDlg::OnFileOpenimage)
+	ON_COMMAND(ID_CHANNEL_GARY, &CImageProcessDlg::OnChannelGary)
+	ON_COMMAND(ID_HISTOGRAM_SHOW, &CImageProcessDlg::OnHistogramShow)
+	ON_BN_CLICKED(IDC_BUTTON_OPEN, &CImageProcessDlg::OnBnClickedButtonOpen)
+	ON_BN_CLICKED(IDC_BUTTON_SAVE, &CImageProcessDlg::OnBnClickedButtonSave)
+	ON_COMMAND(ID_CHANNEL_GRAYB, &CImageProcessDlg::OnChannelGrayb)
+	ON_COMMAND(ID_HISTOGRAM_SHOWB, &CImageProcessDlg::OnHistogramShowb)
+	ON_COMMAND(ID_HISTOGRAM_HIST, &CImageProcessDlg::OnHistogramHist)
+	ON_COMMAND(ID_BINARY_MODE, &CImageProcessDlg::OnBinaryMode)
+	ON_COMMAND(ID_FILE_OPENGRAYIMAGE, &CImageProcessDlg::OnFileOpengrayimage)
+	ON_COMMAND(ID_BINARY_MODEB, &CImageProcessDlg::OnBinaryModeb)
 END_MESSAGE_MAP()
 
 
@@ -177,4 +198,284 @@ void CImageProcessDlg::OnTestTestopencv()
 {
 	Mat mat = imread("test/Lena.png", 1);
 	imshow("Test", mat);
+}
+
+void CImageProcessDlg::OnFileOpenimage()
+{
+	// 设置过滤器   
+    TCHAR szFilter[] = _T("Image File(*.jpg;*.jpeg;*.png;*.bmp)|*.jpg;*.jpeg;*.png;*.bmp|All File(*.*)|*.*||");   
+    // 构造打开文件对话框   
+    CFileDialog fileDlg(TRUE, NULL, NULL, 0, szFilter, this);   
+    CString strFilePath;   
+  
+    // 显示打开文件对话框   
+    if (IDOK == fileDlg.DoModal())   
+    {   
+        // 如果点击了文件对话框上的“打开”按钮，则将选择的文件路径显示到编辑框里   
+        strFilePath = fileDlg.GetPathName();  
+		//MessageBox(strFilePath);
+
+		m_src = imread(strFilePath.GetBuffer(0), 1);
+		ShowCurImage(m_src);
+    }   
+}
+
+void CImageProcessDlg::OnFileOpengrayimage()
+{	
+	// 设置过滤器   
+    TCHAR szFilter[] = _T("Image File(*.jpg;*.jpeg;*.png;*.bmp)|*.jpg;*.jpeg;*.png;*.bmp|All File(*.*)|*.*||");   
+    // 构造打开文件对话框   
+    CFileDialog fileDlg(TRUE, NULL, NULL, 0, szFilter, this);   
+    CString strFilePath;   
+  
+    // 显示打开文件对话框   
+    if (IDOK == fileDlg.DoModal())   
+    {   
+        // 如果点击了文件对话框上的“打开”按钮，则将选择的文件路径显示到编辑框里   
+        strFilePath = fileDlg.GetPathName();  
+		//MessageBox(strFilePath);
+
+		m_src = imread(strFilePath.GetBuffer(0), 0);
+		ShowCurImage(m_src);
+    }   
+}
+
+
+void CImageProcessDlg::OnChannelGary()
+{
+	CChannel channel;
+	channel.setDebug(CChannel::DEBUG_OPEN);
+
+	channel.Gray(m_cur, m_channel);
+	ShowCurImage(m_channel);
+}
+
+void CImageProcessDlg::ShowCurImage(const Mat mat)
+{
+	mat.copyTo(m_cur);
+	IplImage img = m_cur;
+	DrawPicToHDC(&img, IDC_SHOWIMAGE);
+}
+
+
+void CImageProcessDlg::OnHistogramShow()
+{
+	Mat hist;
+	CHistogram histogram;
+	histogram.Show(m_cur, hist);
+	imshow("Histogram", hist);
+}
+
+
+void CImageProcessDlg::OnBnClickedButtonOpen()
+{	
+	TCHAR			szFolderPath[MAX_PATH] = {0};
+	CString			strFolderPath = TEXT("");
+		
+	BROWSEINFO		sInfo;
+	::ZeroMemory(&sInfo, sizeof(BROWSEINFO));
+	sInfo.pidlRoot   = 0;
+	sInfo.lpszTitle   = _T("请选择一个文件夹：");
+	sInfo.ulFlags   = BIF_DONTGOBELOWDOMAIN | BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_EDITBOX;
+	sInfo.lpfn     = NULL;
+
+	// 显示文件夹选择对话框
+	LPITEMIDLIST lpidlBrowse = ::SHBrowseForFolder(&sInfo); 
+	if (lpidlBrowse != NULL)
+	{
+		// 取得文件夹名
+		if (::SHGetPathFromIDList(lpidlBrowse,szFolderPath))  
+		{
+			strFolderPath = szFolderPath;
+			m_openpath = strFolderPath;
+			
+			CString str_file = strFolderPath;
+			
+			CString res_str;
+			m_images.clear();
+
+			CString suffixs[] = {"\\*.jpg","\\*.jpeg","\\*.bmp","\\*.png"};
+			for(int i = 0; i < 4; ++i)
+			{
+				CFileFind finder;
+				CString filepathname;
+				BOOL YesNo=finder.FindFile(str_file + suffixs[i]);
+				while (YesNo)
+				{
+					YesNo=finder.FindNextFile();
+					filepathname=finder.GetFilePath();
+					m_images.push_back(filepathname);
+				}
+			}
+
+			for(vector<CString>::size_type v_i = 0; v_i != m_images.size(); ++v_i)
+			{
+				res_str += m_images[v_i];
+				res_str += "\r\n";
+			}
+
+			m_res = res_str;
+
+			UpdateData(FALSE);
+		}
+	}
+	if(lpidlBrowse != NULL)
+	{
+		::CoTaskMemFree(lpidlBrowse);
+	}
+}
+
+
+void CImageProcessDlg::OnBnClickedButtonSave()
+{	
+	TCHAR			szFolderPath[MAX_PATH] = {0};
+	CString			strFolderPath = TEXT("");
+		
+	BROWSEINFO		sInfo;
+	::ZeroMemory(&sInfo, sizeof(BROWSEINFO));
+	sInfo.pidlRoot   = 0;
+	sInfo.lpszTitle   = _T("请选择一个文件夹：");
+	sInfo.ulFlags   = BIF_DONTGOBELOWDOMAIN | BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_EDITBOX;
+	sInfo.lpfn     = NULL;
+
+	// 显示文件夹选择对话框
+	LPITEMIDLIST lpidlBrowse = ::SHBrowseForFolder(&sInfo); 
+	if (lpidlBrowse != NULL)
+	{
+		// 取得文件夹名
+		if (::SHGetPathFromIDList(lpidlBrowse,szFolderPath))  
+		{
+			strFolderPath = szFolderPath;
+			this->m_savepath = strFolderPath;
+			
+			UpdateData(FALSE);
+			
+		}
+	}
+	if(lpidlBrowse != NULL)
+	{
+		::CoTaskMemFree(lpidlBrowse);
+	}
+}
+
+
+void CImageProcessDlg::OnChannelGrayb()
+{
+	CChannel channel;
+
+
+	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+	{	
+		Mat dst;
+
+		string str = m_images[v_i].GetBuffer(0);
+
+		int index1 = str.find_last_of("\\");
+		int index2 = str.find_last_of(".");
+		string name = str.substr(index1 + 1,index2 - index1 - 1);
+		
+		Mat src = imread(str, 1);
+		
+		int result = channel.Gray(src, dst);
+
+		if (result == 0)
+		{
+			std::stringstream ss(std::stringstream::in | std::stringstream::out);
+			ss << this->m_savepath << "\\" << name << "_gray.jpg";
+			imwrite(ss.str(), dst);
+		}
+	}
+	MessageBox("Finish");
+}
+
+
+void CImageProcessDlg::OnHistogramShowb()
+{
+	CHistogram histogram;
+	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+	{	
+		Mat dst;
+
+		string str = m_images[v_i].GetBuffer(0);
+		
+		int index1 = str.find_last_of("\\");
+		int index2 = str.find_last_of(".");
+		string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+		Mat src = imread(str, 0);
+		
+		int result = histogram.Show(src, dst);
+
+		if (result == 0)
+		{
+			std::stringstream ss(std::stringstream::in | std::stringstream::out);
+			ss << this->m_savepath << "\\" << name << "_hist.jpg";
+			imwrite(ss.str(), dst);
+		}
+	}
+	MessageBox("Finish");
+}
+
+
+void CImageProcessDlg::OnHistogramHist()
+{
+	Mat hist;
+	CHistogram histogram;
+	histogram.setDebug(CHistogram::DEBUG_OPEN);
+
+	int arr_hist[256];
+	histogram.Hist(m_cur, arr_hist);
+
+	std::ostringstream oss;
+	for(int i = 0; i < 256; ++i)
+	{
+		oss << i << " : " << arr_hist[i] << "\r\n";
+
+	}
+
+	m_res = oss.str().c_str();
+	
+	UpdateData(FALSE);
+}
+
+
+void CImageProcessDlg::OnBinaryMode()
+{
+	CBinary binary;
+	//binary.setDebug(CBinary::DEBUG_OPEN);
+
+	Mat m_binary;
+	binary.Mode(m_cur, m_binary);
+
+	ShowCurImage(m_binary);
+}
+
+
+
+void CImageProcessDlg::OnBinaryModeb()
+{
+	CBinary binary;
+	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+	{	
+		Mat dst;
+
+		string str = m_images[v_i].GetBuffer(0);
+		
+		int index1 = str.find_last_of("\\");
+		int index2 = str.find_last_of(".");
+		string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+		Mat src = imread(str, 0);
+		
+		int result = binary.Mode(src, dst);
+
+		if (result == 0)
+		{
+			std::stringstream ss(std::stringstream::in | std::stringstream::out);
+			ss << this->m_savepath << "\\" << name << "_gray.jpg";
+			imwrite(ss.str(), dst);
+		}
+	}
+
+	MessageBox("Finish");
 }

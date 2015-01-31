@@ -102,7 +102,10 @@
     <None Include="res\ImageProcess.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Binary.h" />
+    <ClInclude Include="Channel.h" />
     <ClInclude Include="CvvImage.h" />
+    <ClInclude Include="Histogram.h" />
     <ClInclude Include="ImageProcess.h" />
     <ClInclude Include="ImageProcessDlg.h" />
     <ClInclude Include="Resource.h" />
@@ -110,7 +113,10 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Binary.cpp" />
+    <ClCompile Include="Channel.cpp" />
     <ClCompile Include="CvvImage.cpp" />
+    <ClCompile Include="Histogram.cpp" />
     <ClCompile Include="ImageProcess.cpp" />
     <ClCompile Include="ImageProcessDlg.cpp" />
     <ClCompile Include="stdafx.cpp">
