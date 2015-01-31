@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Opencv2.4.8.h"
 
 // CImageProcessDlg dialog
 class CImageProcessDlg : public CDialogEx
@@ -31,4 +32,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnTestTest();
+	afx_msg void OnTestTestopencv();
+	void DrawPicToHDC(IplImage * img, UINT ID);
 };

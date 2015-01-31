@@ -1,35 +1,24 @@
-﻿生成启动时间为 1/31/2015 1:55:39 PM。
-     1>项目“D:\Data\Code\ImageProcess\ImageProcess_02\ImageProcess\ImageProcess\ImageProcess.vcxproj”在节点 2 上(build 个目标)。
+﻿生成启动时间为 1/31/2015 2:29:54 PM。
+     1>项目“D:\Data\Code\ImageProcess_02\ImageProcess\ImageProcess\ImageProcess.vcxproj”在节点 2 上(build 个目标)。
      1>InitializeBuildStatus:
          正在创建“Debug\ImageProcess.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
        ClCompile:
          所有输出均为最新。
-         d:\ProgramFiles86\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _MBCS /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\ImageProcess.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt ImageProcess.cpp ImageProcessDlg.cpp
-         ImageProcessDlg.cpp
-         正在生成代码...
-         正在跳过...(未检测到相关更改)
-         ImageProcess.cpp
+         所有输出均为最新。
        ResourceCompile:
          所有输出均为最新。
        ManifestResourceCompile:
          所有输出均为最新。
        Link:
-         d:\ProgramFiles86\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Data\Code\ImageProcess\ImageProcess_02\ImageProcess\Debug\ImageProcess.exe" /INCREMENTAL /NOLOGO /MANIFEST /ManifestFile:"Debug\ImageProcess.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\Data\Code\ImageProcess\ImageProcess_02\ImageProcess\Debug\ImageProcess.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Data\Code\ImageProcess\ImageProcess_02\ImageProcess\Debug\ImageProcess.lib" /MACHINE:X86 Debug\ImageProcess.res
-         Debug\ImageProcess.exe.embed.manifest.res
-         Debug\ImageProcess.obj
-         Debug\ImageProcessDlg.obj
-         Debug\stdafx.obj
+         所有输出均为最新。
        Manifest:
          C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\ImageProcess.exe.embed.manifest" /manifest Debug\ImageProcess.exe.intermediate.manifest "d:\ProgramFiles86\Microsoft Visual Studio 10.0\VC\Include\Manifest\dpiaware.manifest"
          所有输出均为最新。
-       LinkEmbedManifest:
-         所有输出均为最新。
-         ImageProcess.vcxproj -> D:\Data\Code\ImageProcess\ImageProcess_02\ImageProcess\Debug\ImageProcess.exe
        FinalizeBuildStatus:
          正在删除文件“Debug\ImageProcess.unsuccessfulbuild”。
          正在对“Debug\ImageProcess.lastbuildstate”执行 Touch 任务。
-     1>已完成生成项目“D:\Data\Code\ImageProcess\ImageProcess_02\ImageProcess\ImageProcess\ImageProcess.vcxproj”(build 个目标)的操作。
+     1>已完成生成项目“D:\Data\Code\ImageProcess_02\ImageProcess\ImageProcess\ImageProcess.vcxproj”(build 个目标)的操作。
 
 生成成功。
 
-已用时间 00:00:00.49
+已用时间 00:00:00.13

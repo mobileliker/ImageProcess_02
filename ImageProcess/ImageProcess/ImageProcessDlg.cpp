@@ -64,6 +64,7 @@ BEGIN_MESSAGE_MAP(CImageProcessDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_COMMAND(ID_TEST_TEST, &CImageProcessDlg::OnTestTest)
+	ON_COMMAND(ID_TEST_TESTOPENCV, &CImageProcessDlg::OnTestTestopencv)
 END_MESSAGE_MAP()
 
 
@@ -157,4 +158,23 @@ HCURSOR CImageProcessDlg::OnQueryDragIcon()
 void CImageProcessDlg::OnTestTest()
 {
 	MessageBox("Test");
+}
+
+
+void CImageProcessDlg::DrawPicToHDC(IplImage * img, UINT ID)
+{
+	CDC *pDC = GetDlgItem(ID)->GetDC();
+	HDC hDC= pDC->GetSafeHdc();
+	CRect rect;
+	GetDlgItem(ID)->GetClientRect(&rect);
+	CvvImage cimg;
+	cimg.CopyOf( img ); // 复制图片
+	cimg.DrawToHDC( hDC, &rect ); // 将图片绘制到显示控件的指定区域内
+	ReleaseDC( pDC );
+}
+
+void CImageProcessDlg::OnTestTestopencv()
+{
+	Mat mat = imread("test/Lena.png", 1);
+	imshow("Test", mat);
 }
