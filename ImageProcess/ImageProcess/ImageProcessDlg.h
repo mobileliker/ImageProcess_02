@@ -40,6 +40,7 @@ public:
 	Mat m_src;
 	Mat m_cur;
 	Mat m_channel;
+	Mat m_binary;
 	afx_msg void OnChannelGary();
 	afx_msg void OnHistogramShow();
 	afx_msg void OnBnClickedButtonOpen();
@@ -56,4 +57,9 @@ public:
 	afx_msg void OnBinaryMode();
 	afx_msg void OnFileOpengrayimage();
 	afx_msg void OnBinaryModeb();
+	afx_msg void OnBinaryOtsu();
+	afx_msg void OnBinaryOtsub();
+	afx_msg void OnBinaryMaxentropy();
+	afx_msg void OnBinaryIteration();
+	afx_msg void OnBinaryMannal();
 };

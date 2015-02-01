@@ -11,6 +11,8 @@
 #include "Histogram.h"
 #include "Binary.h"
 
+#include "InputNumDlg.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -86,6 +88,11 @@ BEGIN_MESSAGE_MAP(CImageProcessDlg, CDialogEx)
 	ON_COMMAND(ID_BINARY_MODE, &CImageProcessDlg::OnBinaryMode)
 	ON_COMMAND(ID_FILE_OPENGRAYIMAGE, &CImageProcessDlg::OnFileOpengrayimage)
 	ON_COMMAND(ID_BINARY_MODEB, &CImageProcessDlg::OnBinaryModeb)
+	ON_COMMAND(ID_BINARY_OTSU, &CImageProcessDlg::OnBinaryOtsu)
+	ON_COMMAND(ID_BINARY_OTSUB, &CImageProcessDlg::OnBinaryOtsub)
+	ON_COMMAND(ID_BINARY_MAXENTROPY, &CImageProcessDlg::OnBinaryMaxentropy)
+	ON_COMMAND(ID_BINARY_ITERATION, &CImageProcessDlg::OnBinaryIteration)
+	ON_COMMAND(ID_BINARY_MANNAL, &CImageProcessDlg::OnBinaryMannal)
 END_MESSAGE_MAP()
 
 
@@ -444,7 +451,6 @@ void CImageProcessDlg::OnBinaryMode()
 	CBinary binary;
 	//binary.setDebug(CBinary::DEBUG_OPEN);
 
-	Mat m_binary;
 	binary.Mode(m_cur, m_binary);
 
 	ShowCurImage(m_binary);
@@ -478,4 +484,82 @@ void CImageProcessDlg::OnBinaryModeb()
 	}
 
 	MessageBox("Finish");
+}
+
+
+void CImageProcessDlg::OnBinaryOtsu()
+{	
+	CBinary binary;
+	//binary.setDebug(CBinary::DEBUG_OPEN);
+
+	binary.OTSU(m_cur, m_binary);
+
+	ShowCurImage(m_binary);
+}
+
+
+void CImageProcessDlg::OnBinaryOtsub()
+{
+	CBinary binary;
+	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+	{	
+		Mat dst;
+
+		string str = m_images[v_i].GetBuffer(0);
+		
+		int index1 = str.find_last_of("\\");
+		int index2 = str.find_last_of(".");
+		string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+		Mat src = imread(str, 0);
+		
+		int result = binary.OTSU(src, dst);
+
+		if (result == 0)
+		{
+			std::stringstream ss(std::stringstream::in | std::stringstream::out);
+			ss << this->m_savepath << "\\" << name << "_gray.jpg";
+			imwrite(ss.str(), dst);
+		}
+	}
+
+	MessageBox("Finish");
+}
+
+
+void CImageProcessDlg::OnBinaryMaxentropy()
+{
+	CBinary binary;
+	binary.setDebug(CBinary::DEBUG_OPEN);
+
+	binary.MaxEntropy(m_cur, m_binary);
+
+	ShowCurImage(m_binary);
+}
+
+
+void CImageProcessDlg::OnBinaryIteration()
+{
+	CBinary binary;
+	binary.setDebug(CBinary::DEBUG_OPEN);
+
+	binary.Iteration(m_cur, m_binary);
+
+	ShowCurImage(m_binary);
+}
+
+
+void CImageProcessDlg::OnBinaryMannal()
+{
+	CInputNumDlg dlg;
+	CBinary binary;
+
+	dlg.m_num = binary.otsuThreshold(m_cur);
+
+	if(dlg.DoModal())
+	{
+		int threshold = dlg.m_num;
+		binary.Mannal(m_cur, m_binary, threshold);
+		ShowCurImage(m_binary);
+	}
 }

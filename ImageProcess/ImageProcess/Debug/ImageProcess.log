@@ -1,15 +1,23 @@
-﻿生成启动时间为 1/31/2015 8:30:43 PM。
+﻿生成启动时间为 2/1/2015 4:54:40 PM。
      1>项目“D:\Data\Code\ImageProcess_02\ImageProcess\ImageProcess\ImageProcess.vcxproj”在节点 2 上(build 个目标)。
      1>InitializeBuildStatus:
          正在创建“Debug\ImageProcess.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
        ClCompile:
          所有输出均为最新。
-         d:\ProgramFiles86\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _MBCS /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\ImageProcess.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt ImageProcessDlg.cpp
+         d:\ProgramFiles86\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _MBCS /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\ImageProcess.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Binary.cpp ImageProcessDlg.cpp
          ImageProcessDlg.cpp
      1>d:\program files\opencv2.4.8\build\include\opencv2\legacy\blobtrack.hpp(187): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  d:\programfiles86\microsoft visual studio 10.0\vc\include\string.h(105) : 参见“strcpy”的声明
      1>d:\program files\opencv2.4.8\build\include\opencv2\legacy\blobtrack.hpp(256): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  d:\programfiles86\microsoft visual studio 10.0\vc\include\string.h(110) : 参见“strcat”的声明
+         Binary.cpp
+     1>d:\program files\opencv2.4.8\build\include\opencv2\legacy\blobtrack.hpp(187): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\programfiles86\microsoft visual studio 10.0\vc\include\string.h(105) : 参见“strcpy”的声明
+     1>d:\program files\opencv2.4.8\build\include\opencv2\legacy\blobtrack.hpp(256): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\programfiles86\microsoft visual studio 10.0\vc\include\string.h(110) : 参见“strcat”的声明
+     1>d:\data\code\imageprocess_02\imageprocess\imageprocess\binary.cpp(119): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\data\code\imageprocess_02\imageprocess\imageprocess\binary.cpp(189): warning C4244: “=”: 从“double”转换到“byte”，可能丢失数据
+         正在生成代码...
        ResourceCompile:
          所有输出均为最新。
        ManifestResourceCompile:
@@ -23,6 +31,7 @@
          Debug\Histogram.obj
          Debug\ImageProcess.obj
          Debug\ImageProcessDlg.obj
+         Debug\InputNumDlg.obj
          Debug\stdafx.obj
        Manifest:
          C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\ImageProcess.exe.embed.manifest" /manifest Debug\ImageProcess.exe.intermediate.manifest "d:\ProgramFiles86\Microsoft Visual Studio 10.0\VC\Include\Manifest\dpiaware.manifest"
@@ -37,4 +46,4 @@
 
 生成成功。
 
-已用时间 00:00:02.73
+已用时间 00:00:04.64

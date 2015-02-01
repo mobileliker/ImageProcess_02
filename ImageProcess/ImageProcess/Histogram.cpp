@@ -48,7 +48,8 @@ int CHistogram::Show(Mat src, Mat& hist)
 			cvPoint((i+1)*scale - 1, hist_height - intensity),
 			CV_RGB(255,255,255));  
 	}
-
+	
+	cvReleaseHist(&gray_hist);
 	hist = hist_image;
 
 	if(m_debug)
@@ -83,6 +84,8 @@ int CHistogram::Hist(Mat src, int * arr_hist)
 		float bin_val = cvQueryHistValue_1D(gray_hist,i); //ÏñËØiµÄ¸ÅÂÊ
 		arr_hist[i] = (int)bin_val;
 	}
+	
+	cvReleaseHist(&gray_hist);
 
 	if(m_debug)
 	{
