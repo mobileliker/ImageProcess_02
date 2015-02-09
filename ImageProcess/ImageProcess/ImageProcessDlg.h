@@ -62,4 +62,16 @@ public:
 	afx_msg void OnBinaryMaxentropy();
 	afx_msg void OnBinaryIteration();
 	afx_msg void OnBinaryMannal();
+	afx_msg void OnBlurHomogeneous();
+	afx_msg void OnBlurSalt();
+	afx_msg void OnBlurGaussian();
+	afx_msg void OnBlurMedian();
+	afx_msg void OnBlurBilatrial();
+	afx_msg void OnNoiseGussian();
+	afx_msg void OnFileSaveimage();
+	afx_msg void OnBlurAdaptivebilateral();
+	afx_msg void OnHistogramEqual();
+	afx_msg void OnHistogramEqualb();
+	afx_msg void OnResize50();
+	afx_msg void OnResize51();
 };

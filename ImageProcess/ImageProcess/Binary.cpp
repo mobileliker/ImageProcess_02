@@ -75,7 +75,7 @@ int CBinary::Mode(Mat src, Mat &dst)
 
 int CBinary::OTSU(Mat src, Mat &dst)
 {
-	threshold(src, dst, 0, 255, CV_THRESH_OTSU+CV_THRESH_BINARY);
+	threshold(src, dst, 10, 255, CV_THRESH_OTSU+CV_THRESH_BINARY);
 
 	if(m_debug)
 	{

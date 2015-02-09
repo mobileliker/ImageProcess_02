@@ -10,6 +10,7 @@
 #include "Channel.h"
 #include "Histogram.h"
 #include "Binary.h"
+#include "Blur.h"
 
 #include "InputNumDlg.h"
 
@@ -93,6 +94,18 @@ BEGIN_MESSAGE_MAP(CImageProcessDlg, CDialogEx)
 	ON_COMMAND(ID_BINARY_MAXENTROPY, &CImageProcessDlg::OnBinaryMaxentropy)
 	ON_COMMAND(ID_BINARY_ITERATION, &CImageProcessDlg::OnBinaryIteration)
 	ON_COMMAND(ID_BINARY_MANNAL, &CImageProcessDlg::OnBinaryMannal)
+	ON_COMMAND(ID_BLUR_HOMOGENEOUS, &CImageProcessDlg::OnBlurHomogeneous)
+	ON_COMMAND(ID_BLUR_SALT, &CImageProcessDlg::OnBlurSalt)
+	ON_COMMAND(ID_BLUR_GAUSSIAN, &CImageProcessDlg::OnBlurGaussian)
+	ON_COMMAND(ID_BLUR_MEDIAN, &CImageProcessDlg::OnBlurMedian)
+	ON_COMMAND(ID_BLUR_BILATRIAL, &CImageProcessDlg::OnBlurBilatrial)
+	ON_COMMAND(ID_NOISE_GUSSIAN, &CImageProcessDlg::OnNoiseGussian)
+	ON_COMMAND(ID_FILE_SAVEIMAGE, &CImageProcessDlg::OnFileSaveimage)
+	ON_COMMAND(ID_BLUR_ADAPTIVEBILATERAL, &CImageProcessDlg::OnBlurAdaptivebilateral)
+	ON_COMMAND(ID_HISTOGRAM_EQUAL, &CImageProcessDlg::OnHistogramEqual)
+	ON_COMMAND(ID_HISTOGRAM_EQUALB, &CImageProcessDlg::OnHistogramEqualb)
+	ON_COMMAND(ID_RESIZE_50, &CImageProcessDlg::OnResize50)
+	ON_COMMAND(ID_RESIZE_51, &CImageProcessDlg::OnResize51)
 END_MESSAGE_MAP()
 
 
@@ -562,4 +575,167 @@ void CImageProcessDlg::OnBinaryMannal()
 		binary.Mannal(m_cur, m_binary, threshold);
 		ShowCurImage(m_binary);
 	}
+}
+
+
+void CImageProcessDlg::OnBlurHomogeneous()
+{
+	CBlur iblur;
+	
+	Mat m_blur;
+	iblur.HomogeneousBlur(m_cur, m_blur);
+	ShowCurImage(m_blur);
+
+}
+
+
+void CImageProcessDlg::OnBlurSalt()
+{
+	CInputNumDlg dlg;
+	dlg.m_num = 6000;
+	Mat m_noise;
+
+	if(dlg.DoModal())
+	{
+		CBlur blur;
+		blur.Salt(m_cur, m_noise);
+		ShowCurImage(m_noise);
+	}
+
+
+}
+
+
+void CImageProcessDlg::OnBlurGaussian()
+{
+	CBlur iblur;
+	
+	Mat m_blur;
+	iblur.iGuassianBlur(m_cur, m_blur);
+	ShowCurImage(m_blur);
+}
+
+
+void CImageProcessDlg::OnBlurMedian()
+{
+	CBlur iblur;
+	
+	Mat m_blur;
+	iblur.iMedianBlur(m_cur, m_blur, 11);
+	ShowCurImage(m_blur);
+
+}
+
+
+void CImageProcessDlg::OnBlurBilatrial()
+{
+	CBlur iblur;
+	
+	Mat m_blur;
+	iblur.iBilatrialBlur(m_cur, m_blur);
+	ShowCurImage(m_blur);
+
+}
+
+
+void CImageProcessDlg::OnNoiseGussian()
+{
+	CBlur iblur;
+	Mat m_noise;
+	iblur.Gaussian(m_cur, m_noise);
+	ShowCurImage(m_noise);
+}
+
+
+void CImageProcessDlg::OnFileSaveimage()
+{
+
+}
+
+
+void CImageProcessDlg::OnBlurAdaptivebilateral()
+{
+	CBlur iblur;
+	
+	Mat m_blur;
+	iblur.iAdaptiveBilateralBlur(m_cur, m_blur);
+	ShowCurImage(m_blur);
+}
+
+void CImageProcessDlg::OnHistogramEqual()
+{
+	Mat equal;
+
+	CHistogram histogram;
+
+	histogram.iEqualizeHist(m_cur, equal);
+
+	ShowCurImage(equal);
+}
+
+
+void CImageProcessDlg::OnHistogramEqualb()
+{
+	CHistogram ihistogram;
+	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+	{	
+		Mat dst;
+
+		string str = m_images[v_i].GetBuffer(0);
+		
+		int index1 = str.find_last_of("\\");
+		int index2 = str.find_last_of(".");
+		string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+		Mat src = imread(str, 1);
+		
+		int result = ihistogram.iEqualizeHist(src, dst);
+
+		if (result == 0)
+		{
+			std::stringstream ss(std::stringstream::in | std::stringstream::out);
+			ss << this->m_savepath << "\\" << name << "_equalizehist.jpg";
+			imwrite(ss.str(), dst);
+		}
+	}
+
+	MessageBox("Finish");
+}
+
+
+void CImageProcessDlg::OnResize50()
+{
+	Mat roi_img;
+	Rect rect((int)(m_cur.cols * 0.25), (int)(m_cur.rows * 0.25), (int)(m_cur.cols * 0.5), (int)(m_cur.rows * 0.5));
+	m_cur(rect).copyTo(roi_img);
+	ShowCurImage(roi_img);
+}
+
+
+void CImageProcessDlg::OnResize51()
+{
+	CHistogram ihistogram;
+	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+	{	
+		Mat dst;
+
+		string str = m_images[v_i].GetBuffer(0);
+		
+		int index1 = str.find_last_of("\\");
+		int index2 = str.find_last_of(".");
+		string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+		Mat src = imread(str, 1);
+		
+		Mat roi_img;
+		Rect rect((int)(src.cols * 0.25), (int)(src.rows * 0.25), (int)(src.cols * 0.5), (int)(src.rows * 0.5));
+		src(rect).copyTo(roi_img);
+
+		std::stringstream ss(std::stringstream::in | std::stringstream::out);
+		ss << this->m_savepath << "\\" << name << ".jpg";
+		imwrite(ss.str(), roi_img);
+
+	}
+
+	MessageBox("Finish");
 }

@@ -103,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Binary.h" />
+    <ClInclude Include="Blur.h" />
     <ClInclude Include="Channel.h" />
     <ClInclude Include="CvvImage.h" />
     <ClInclude Include="Histogram.h" />
@@ -115,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Binary.cpp" />
+    <ClCompile Include="Blur.cpp" />
     <ClCompile Include="Channel.cpp" />
     <ClCompile Include="CvvImage.cpp" />
     <ClCompile Include="Histogram.cpp" />

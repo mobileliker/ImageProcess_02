@@ -22,5 +22,6 @@ protected:
 public:
 	int Show(Mat, Mat&);
 	int Hist(Mat src, int * arr_hist);
+	int iEqualizeHist(Mat, Mat&);
 };
 

@@ -98,3 +98,21 @@ int CHistogram::Hist(Mat src, int * arr_hist)
 	}
 	return 0;
 }
+
+
+int CHistogram::iEqualizeHist(Mat src, Mat &dst)
+{
+	vector<Mat> srgb(src.channels());
+	vector<Mat> mrgb(src.channels());
+
+	split(src, srgb);
+
+	for(int i = 0; i < srgb.size(); ++i)
+	{	
+		equalizeHist(srgb[i], mrgb[i]);
+	}
+
+	merge(mrgb, dst);
+
+	return 0;
+}
