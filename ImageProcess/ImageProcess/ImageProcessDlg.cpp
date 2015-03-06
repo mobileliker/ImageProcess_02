@@ -11,6 +11,7 @@
 #include "Histogram.h"
 #include "Binary.h"
 #include "Blur.h"
+#include "Thinning.h"
 
 #include "InputNumDlg.h"
 
@@ -111,6 +112,15 @@ BEGIN_MESSAGE_MAP(CImageProcessDlg, CDialogEx)
 	ON_COMMAND(ID_BINARY_MAXENTROPYB, &CImageProcessDlg::OnBinaryMaxentropyb)
 	ON_COMMAND(ID_BINARY_ITERATIONB, &CImageProcessDlg::OnBinaryIterationb)
 	ON_COMMAND(ID_BINARY_MANNALB, &CImageProcessDlg::OnBinaryMannalb)
+	ON_COMMAND(ID_THINNING_ROSENFELD, &CImageProcessDlg::OnThinningRosenfeld)
+	ON_COMMAND(ID_THINNING_ROSENFELDB, &CImageProcessDlg::OnThinningRosenfeldb)
+	ON_COMMAND(ID_THINNING_ZHANG, &CImageProcessDlg::OnThinningZhang)
+	ON_COMMAND(ID_THINNING_ZHANGB, &CImageProcessDlg::OnThinningZhangb)
+	ON_COMMAND(ID_THINNING_HILDITCH1, &CImageProcessDlg::OnThinningHilditch1)
+	ON_COMMAND(ID_THINNING_HILDITCH2, &CImageProcessDlg::OnThinningHilditch2)
+	ON_COMMAND(ID_THINNING_HILDITCH1B, &CImageProcessDlg::OnThinningHilditch1b)
+	ON_COMMAND(ID_THINNING_HILDITCH2B, &CImageProcessDlg::OnThinningHilditch2b)
+	ON_COMMAND(ID_THINNING_PAVLIDIS, &CImageProcessDlg::OnThinningPavlidis)
 END_MESSAGE_MAP()
 
 
@@ -576,7 +586,7 @@ void CImageProcessDlg::OnBinaryMaxentropyb()
 		if (result == 0)
 		{
 			std::stringstream ss(std::stringstream::in | std::stringstream::out);
-			ss << this->m_savepath << "\\" << name << ".jpg";
+			ss << this->m_savepath << "\\" << name << ".bmp";
 			imwrite(ss.str(), dst);
 		}
 	}
@@ -616,7 +626,7 @@ void CImageProcessDlg::OnBinaryIterationb()
 		if (result == 0)
 		{
 			std::stringstream ss(std::stringstream::in | std::stringstream::out);
-			ss << this->m_savepath << "\\" << name << ".jpg";
+			ss << this->m_savepath << "\\" << name << ".bmp";
 			imwrite(ss.str(), dst);
 		}
 	}
@@ -667,7 +677,7 @@ void CImageProcessDlg::OnBinaryMannalb()
 			if (result == 0)
 			{
 				std::stringstream ss(std::stringstream::in | std::stringstream::out);
-				ss << this->m_savepath << "\\" << name << ".jpg";
+				ss << this->m_savepath << "\\" << name << ".bmp";
 				imwrite(ss.str(), dst);
 			}
 		}
@@ -792,7 +802,7 @@ void CImageProcessDlg::OnHistogramEqualb()
 		if (result == 0)
 		{
 			std::stringstream ss(std::stringstream::in | std::stringstream::out);
-			ss << this->m_savepath << "\\" << name << "_equalizehist.jpg";
+			ss << this->m_savepath << "\\" << name << "_equalizehist.bmp";
 			imwrite(ss.str(), dst);
 		}
 	}
@@ -830,7 +840,7 @@ void CImageProcessDlg::OnResize51()
 		src(rect).copyTo(roi_img);
 
 		std::stringstream ss(std::stringstream::in | std::stringstream::out);
-		ss << this->m_savepath << "\\" << name << ".jpg";
+		ss << this->m_savepath << "\\" << name << ".bmp";
 		imwrite(ss.str(), roi_img);
 
 	}
@@ -864,7 +874,7 @@ void CImageProcessDlg::OnResizeNotb()
 		bitwise_not(src, dst);
 
 		std::stringstream ss(std::stringstream::in | std::stringstream::out);
-		ss << this->m_savepath << "\\" << name << ".jpg";
+		ss << this->m_savepath << "\\" << name << ".bmp";
 		imwrite(ss.str(), dst);
 
 	}
@@ -876,3 +886,171 @@ void CImageProcessDlg::OnResizeNotb()
 
 
 
+
+
+void CImageProcessDlg::OnThinningRosenfeld()
+{
+	CThinning iThinning;
+	iThinning.setDebug(CThinning::DEBUG_OPEN);
+	Mat m_thinning;
+	iThinning.Rosenfeld(m_cur, m_thinning);
+	ShowCurImage(m_thinning);
+}
+
+
+
+
+void CImageProcessDlg::OnThinningRosenfeldb()
+{	
+	CThinning iThinning;
+	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+	{	
+		Mat dst;
+
+		string str = m_images[v_i].GetBuffer(0);
+		
+		int index1 = str.find_last_of("\\");
+		int index2 = str.find_last_of(".");
+		string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+		Mat src = imread(str, 0);
+	
+		int result = iThinning.Rosenfeld(src, dst);
+
+		if (result == 0)
+		{
+			std::stringstream ss(std::stringstream::in | std::stringstream::out);
+			ss << this->m_savepath << "\\" << name << ".bmp";
+			imwrite(ss.str(), dst);
+		}
+	}
+
+	MessageBox("Finish");
+}
+
+
+void CImageProcessDlg::OnThinningZhang()
+{	
+	CThinning iThinning;
+	iThinning.setDebug(CThinning::DEBUG_OPEN);
+	Mat m_thinning;
+	iThinning.Zhang(m_cur, m_thinning);
+	ShowCurImage(m_thinning);
+}
+
+
+void CImageProcessDlg::OnThinningZhangb()
+{	
+	CThinning iThinning;
+	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+	{	
+		Mat dst;
+
+		string str = m_images[v_i].GetBuffer(0);
+		
+		int index1 = str.find_last_of("\\");
+		int index2 = str.find_last_of(".");
+		string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+		Mat src = imread(str, 0);
+	
+		int result = iThinning.Zhang(src, dst);
+
+		if (result == 0)
+		{
+			std::stringstream ss(std::stringstream::in | std::stringstream::out);
+			ss << this->m_savepath << "\\" << name << ".bmp";
+			imwrite(ss.str(), dst);
+		}
+	}
+
+	MessageBox("Finish");
+}
+
+
+void CImageProcessDlg::OnThinningHilditch1()
+{	
+	CThinning iThinning;
+	iThinning.setDebug(CThinning::DEBUG_OPEN);
+	Mat m_thinning;
+	iThinning.Hilditch1(m_cur, m_thinning);
+	ShowCurImage(m_thinning);
+}
+
+
+void CImageProcessDlg::OnThinningHilditch2()
+{
+	CThinning iThinning;
+	iThinning.setDebug(CThinning::DEBUG_OPEN);
+	Mat m_thinning;
+	iThinning.Hilditch2(m_cur, m_thinning);
+	ShowCurImage(m_thinning);
+}
+
+
+void CImageProcessDlg::OnThinningHilditch1b()
+{	
+	CThinning iThinning;
+	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+	{	
+		Mat dst;
+
+		string str = m_images[v_i].GetBuffer(0);
+		
+		int index1 = str.find_last_of("\\");
+		int index2 = str.find_last_of(".");
+		string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+		Mat src = imread(str, 0);
+	
+		int result = iThinning.Hilditch1(src, dst);
+
+		if (result == 0)
+		{
+			std::stringstream ss(std::stringstream::in | std::stringstream::out);
+			ss << this->m_savepath << "\\" << name << ".bmp";
+			imwrite(ss.str(), dst);
+		}
+	}
+
+	MessageBox("Finish");
+}
+
+
+void CImageProcessDlg::OnThinningHilditch2b()
+{	
+	CThinning iThinning;
+	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+	{	
+		Mat dst;
+
+		string str = m_images[v_i].GetBuffer(0);
+		
+		int index1 = str.find_last_of("\\");
+		int index2 = str.find_last_of(".");
+		string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+		Mat src = imread(str, 0);
+	
+		int result = iThinning.Hilditch2(src, dst);
+
+		if (result == 0)
+		{
+			std::stringstream ss(std::stringstream::in | std::stringstream::out);
+			ss << this->m_savepath << "\\" << name << ".bmp";
+			imwrite(ss.str(), dst);
+		}
+	}
+
+	MessageBox("Finish");
+}
+
+
+void CImageProcessDlg::OnThinningPavlidis()
+{	
+	CThinning iThinning;
+	iThinning.setDebug(CThinning::DEBUG_OPEN);
+	Mat m_thinning;
+	iThinning.Pavlidis2(m_cur, m_thinning);
+	ShowCurImage(m_thinning);
+}

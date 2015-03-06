@@ -60,6 +60,9 @@
     <ClInclude Include="Blur.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Thinning.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImageProcess.cpp">
@@ -87,6 +90,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Blur.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Thinning.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -79,4 +79,13 @@ public:
 	afx_msg void OnBinaryMaxentropyb();
 	afx_msg void OnBinaryIterationb();
 	afx_msg void OnBinaryMannalb();
+	afx_msg void OnThinningRosenfeld();
+	afx_msg void OnThinningRosenfeldb();
+	afx_msg void OnThinningZhang();
+	afx_msg void OnThinningZhangb();
+	afx_msg void OnThinningHilditch1();
+	afx_msg void OnThinningHilditch2();
+	afx_msg void OnThinningHilditch1b();
+	afx_msg void OnThinningHilditch2b();
+	afx_msg void OnThinningPavlidis();
 };
