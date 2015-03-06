@@ -74,4 +74,9 @@ public:
 	afx_msg void OnHistogramEqualb();
 	afx_msg void OnResize50();
 	afx_msg void OnResize51();
+	afx_msg void OnResizeNot();
+	afx_msg void OnResizeNotb();
+	afx_msg void OnBinaryMaxentropyb();
+	afx_msg void OnBinaryIterationb();
+	afx_msg void OnBinaryMannalb();
 };

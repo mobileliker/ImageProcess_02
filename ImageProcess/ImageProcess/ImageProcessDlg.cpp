@@ -106,6 +106,11 @@ BEGIN_MESSAGE_MAP(CImageProcessDlg, CDialogEx)
 	ON_COMMAND(ID_HISTOGRAM_EQUALB, &CImageProcessDlg::OnHistogramEqualb)
 	ON_COMMAND(ID_RESIZE_50, &CImageProcessDlg::OnResize50)
 	ON_COMMAND(ID_RESIZE_51, &CImageProcessDlg::OnResize51)
+	ON_COMMAND(ID_RESIZE_NOT, &CImageProcessDlg::OnResizeNot)
+	ON_COMMAND(ID_RESIZE_NOTB, &CImageProcessDlg::OnResizeNotb)
+	ON_COMMAND(ID_BINARY_MAXENTROPYB, &CImageProcessDlg::OnBinaryMaxentropyb)
+	ON_COMMAND(ID_BINARY_ITERATIONB, &CImageProcessDlg::OnBinaryIterationb)
+	ON_COMMAND(ID_BINARY_MANNALB, &CImageProcessDlg::OnBinaryMannalb)
 END_MESSAGE_MAP()
 
 
@@ -531,7 +536,7 @@ void CImageProcessDlg::OnBinaryOtsub()
 		if (result == 0)
 		{
 			std::stringstream ss(std::stringstream::in | std::stringstream::out);
-			ss << this->m_savepath << "\\" << name << "_gray.jpg";
+			ss << this->m_savepath << "\\" << name << ".jpg";
 			imwrite(ss.str(), dst);
 		}
 	}
@@ -551,6 +556,36 @@ void CImageProcessDlg::OnBinaryMaxentropy()
 }
 
 
+void CImageProcessDlg::OnBinaryMaxentropyb()
+{	
+	CBinary binary;
+	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+	{	
+		Mat dst;
+
+		string str = m_images[v_i].GetBuffer(0);
+		
+		int index1 = str.find_last_of("\\");
+		int index2 = str.find_last_of(".");
+		string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+		Mat src = imread(str, 0);
+		
+		int result = binary.MaxEntropy(src, dst);
+
+		if (result == 0)
+		{
+			std::stringstream ss(std::stringstream::in | std::stringstream::out);
+			ss << this->m_savepath << "\\" << name << ".jpg";
+			imwrite(ss.str(), dst);
+		}
+	}
+
+	MessageBox("Finish");
+}
+
+
+
 void CImageProcessDlg::OnBinaryIteration()
 {
 	CBinary binary;
@@ -561,6 +596,33 @@ void CImageProcessDlg::OnBinaryIteration()
 	ShowCurImage(m_binary);
 }
 
+void CImageProcessDlg::OnBinaryIterationb()
+{
+	CBinary binary;
+	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+	{	
+		Mat dst;
+
+		string str = m_images[v_i].GetBuffer(0);
+		
+		int index1 = str.find_last_of("\\");
+		int index2 = str.find_last_of(".");
+		string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+		Mat src = imread(str, 0);
+
+		int result = binary.Iteration(src, dst);
+
+		if (result == 0)
+		{
+			std::stringstream ss(std::stringstream::in | std::stringstream::out);
+			ss << this->m_savepath << "\\" << name << ".jpg";
+			imwrite(ss.str(), dst);
+		}
+	}
+
+	MessageBox("Finish");
+}
 
 void CImageProcessDlg::OnBinaryMannal()
 {
@@ -577,6 +639,42 @@ void CImageProcessDlg::OnBinaryMannal()
 	}
 }
 
+
+void CImageProcessDlg::OnBinaryMannalb()
+{
+	CInputNumDlg dlg;
+	dlg.m_num = 150;
+
+	if(dlg.DoModal())
+	{
+		int threshold = dlg.m_num;
+
+		CBinary binary;
+		for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+		{	
+			Mat dst;
+
+			string str = m_images[v_i].GetBuffer(0);
+		
+			int index1 = str.find_last_of("\\");
+			int index2 = str.find_last_of(".");
+			string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+			Mat src = imread(str, 0);
+			
+			int result = binary.Mannal(src, dst, threshold);
+
+			if (result == 0)
+			{
+				std::stringstream ss(std::stringstream::in | std::stringstream::out);
+				ss << this->m_savepath << "\\" << name << ".jpg";
+				imwrite(ss.str(), dst);
+			}
+		}
+
+		MessageBox("Finish");
+	}
+}
 
 void CImageProcessDlg::OnBlurHomogeneous()
 {
@@ -739,3 +837,42 @@ void CImageProcessDlg::OnResize51()
 
 	MessageBox("Finish");
 }
+
+
+void CImageProcessDlg::OnResizeNot()
+{
+	Mat dst;
+	bitwise_not(m_cur, dst);
+	ShowCurImage(dst);
+}
+
+
+void CImageProcessDlg::OnResizeNotb()
+{
+	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+	{	
+		Mat dst;
+
+		string str = m_images[v_i].GetBuffer(0);
+		
+		int index1 = str.find_last_of("\\");
+		int index2 = str.find_last_of(".");
+		string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+		Mat src = imread(str, 1);
+
+		bitwise_not(src, dst);
+
+		std::stringstream ss(std::stringstream::in | std::stringstream::out);
+		ss << this->m_savepath << "\\" << name << ".jpg";
+		imwrite(ss.str(), dst);
+
+	}
+
+	MessageBox("Finish");
+}
+
+
+
+
+
