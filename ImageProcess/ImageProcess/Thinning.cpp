@@ -962,18 +962,9 @@ int CThinning::Pavlidis(Mat src, Mat &dst)
 }
 
 void CThinning::Pavlidis2(Mat& src, Mat& dst)
-    {
-
-    if(src.type()!=CV_8UC1)
-        {
-        printf("只能处理二值或灰度图像\n");
-        return;
-        }
-    //非原地操作时候，copy src到dst
-    if(dst.data!=src.data)
-        {
-        src.copyTo(dst);
-        }
+{
+	src.copyTo(dst);
+	bitwise_not(dst, dst);
 
     char erase, n[8];
     unsigned char bdr1,bdr2,bdr4,bdr5;
@@ -987,18 +978,18 @@ void CThinning::Pavlidis2(Mat& src, Mat& dst)
 
     //把不能于0的值转化为1，便于后面处理
     for(i=0; i< height; i++)
-        {
+	{
         for(j=0; j<width; j++)
-            {
+		{
             if(dst.at<uchar>(i,j)!=0)
-                {
+			{
                 dst.at<uchar>(i,j) = 1;
-                }
+			}
             //图像边框像素值为0
             if(i==0||i==(height-1)||j==0||j==(width-1))
                 dst.at<uchar>(i,j) = 0;
-            }
-        }
+		}
+	}
 
     erase =1;
     width = width - 1;
@@ -1006,15 +997,15 @@ void CThinning::Pavlidis2(Mat& src, Mat& dst)
     uchar* img;
     int step = dst.step;
     while(erase) 
-        {
+	{
 
         img = dst.data;
         //第一个循环，取得前景轮廓，轮廓用2表示
         for(i=1; i< height; i++)
-            {
+		{
             img += step;
             for(j=1; j < width; j++)
-                {
+			{
                 uchar* p= img+j;
 
 
@@ -1033,10 +1024,10 @@ void CThinning::Pavlidis2(Mat& src, Mat& dst)
                 //bdr1是2进制表示的p0...p6p7排列，10000011,p0=1,p6=p7=1
                 bdr1 =0;
                 for(k=0; k<8; k++)
-                    {
+				{
                     if(n[k]>=1)
                         bdr1|=0x80>>k;
-                    }
+				}
                 //内部点,p0, p2, p4, p6都是为1, 非边界点，所以继续循环
                 //0xaa 10101010
                 //  0   1   0   
@@ -1051,9 +1042,9 @@ void CThinning::Pavlidis2(Mat& src, Mat& dst)
                 b=0;
 
                 for(k=0; k<=7; k++)
-                    {
+				{
                     b+=bdr1&(0x80>>k);
-                    }
+				}
                 //在边界点中，等于1，则是端点，等于0，则是孤立点，此时标记3
                 if(b<=1 )
                     p[0] = 3;
@@ -1076,16 +1067,16 @@ void CThinning::Pavlidis2(Mat& src, Mat& dst)
                 else if((bdr1&0xa)==0 && (bdr1&0x4)!=0)
                     p[0] = 3; 
 
-                }
-            }
+			}
+		}
         //printf("------------------------------\n");
         //PrintMat(dst);
         img = dst.data;
         for(i=1; i<height; i++)
-            {
+		{
             img += step;
             for(j=1; j<width; j++)
-                {
+			{
                 uchar* p= img+j;
 
                 if(p[0]== 0)
@@ -1104,19 +1095,19 @@ void CThinning::Pavlidis2(Mat& src, Mat& dst)
 
                 //bdr1是2进制表示的当前点p的8邻域连通情况，hdr2是当前点周围轮廓点的连接情况
                 for(k=0; k<=7; k++)
-                    {
+				{
                     if(n[k]>=1)
                         bdr1|=0x80>>k;
                     if(n[k]>=2)
                         bdr2|=0x80>>k;
-                    }
+				}
 
                 //相等，就是周围全是值为2的像素，继续
                 if(bdr1==bdr2)
-                    {
+				{
                     p[0] = 4; 
                     continue;
-                    }
+				}
 
                 //p0不为2，继续
                 if(p[0]!=2) continue;
@@ -1131,43 +1122,43 @@ void CThinning::Pavlidis2(Mat& src, Mat& dst)
                 //    ((bdr1&0x40)!=0 &&(bdr1&0x1)!=0 ||     ((bdr1&0x40)!=0 ||(bdr1 & 0x1)!=0) &&(bdr1&0x30)!=0 &&(bdr1&0x6)!=0 )
                     (    ((bdr1&0x40)!=0 ||(bdr1 & 0x1)!=0) &&(bdr1&0x30)!=0 &&(bdr1&0x6)!=0 )
                     )
-                    {
+				{
                     p[0]= 4; 
-                    }
+				}
                 //
                 else if((bdr2&0x20)!=0 && (bdr1&0x2)==0 &&
                     //((bdr1&0x10)!=0 && (bdr1&0x40)!=0 || ((bdr1&0x10)!=0 || (bdr1&0x40)!=0) &&    (bdr1&0xc)!=0 && (bdr1&0x81)!=0)
                     ( ((bdr1&0x10)!=0 || (bdr1&0x40)!=0) &&    (bdr1&0xc)!=0 && (bdr1&0x81)!=0)
                     )
-                    {
+				{
                     p[0]= 4;
-                    }
+				}
 
                 else if((bdr2&0x8)!=0 && (bdr1&0x80)==0 &&
                     //((bdr1&0x4)!=0 && (bdr1&0x10)!=0 || ((bdr1&0x4)!=0 || (bdr1&0x10)!=0) &&(bdr1&0x3)!=0 && (bdr1&0x60)!=0)
                     ( ((bdr1&0x4)!=0 || (bdr1&0x10)!=0) &&(bdr1&0x3)!=0 && (bdr1&0x60)!=0)
                     )
-                    {
+				{
                     p[0]= 4;
-                    }
+				}
 
                 else if((bdr2&0x2)!=0 && (bdr1&0x20)==0 &&
                     //((bdr1&0x1)!=0 && (bdr1&0x4)!=0 ||((bdr1&0x1)!=0 || (bdr1&0x4)!=0) &&(bdr1&0xc0)!=0 && (bdr1&0x18)!=0)
                     (((bdr1&0x1)!=0 || (bdr1&0x4)!=0) &&(bdr1&0xc0)!=0 && (bdr1&0x18)!=0)
                     )
-                    {
+				{
                     p[0]= 4;
-                    }
-                }
-            }
+				}
+			}
+		}
         //printf("------------------------------\n");
         //PrintMat(dst);
         img = dst.data;
         for(i=1; i<height; i++)
-            {
+		{
             img += step;
             for(j=1; j<width; j++)
-                {
+			{
                 uchar* p= img+j;
 
                 if(p[0]!= 2)
@@ -1185,46 +1176,299 @@ void CThinning::Pavlidis2(Mat& src, Mat& dst)
 
                 bdr4 = bdr5 =0;
                 for(k=0; k<=7; k++)
-                    {
+				{
                     if(n[k]>=4)
                         bdr4|=0x80>>k;
                     if(n[k]>=5)
                         bdr5|=0x80>>k;
-                    }
+				}
                 //值为4和5的像素
                 if((bdr4&0x8) == 0)
-                    {
+				{
                     p[0]=5;
                     continue;
-                    }
+				}
                 if((bdr4&0x20) == 0 && bdr5 ==0)
-                    {
+				{
                     p[0]=5;
                     continue;
-                    }
+				}
 
-                }
-            }
+			}
+		}
         erase = 0;
         //printf("------------------------------\n");
         //PrintMat(dst);
         img = dst.data;
         for(i=1; i<height; i++)
-            {
+		{
             img += step;
             for(j=1; j<width; j++)
-                {
+			{
                 uchar* p= img+j;
                 if(p[0]==2||p[0]==5)
-                    {
+				{
                     erase = 1;
                     p[0] = 0;
-                    }
-                }
-            }
+				}
+			}
+		}
         //printf("------------------------------\n");
         //PrintMat(dst);
         //printf("------------------------\n");
+	}
+
+	for(i = 0; i < height; ++i)
+	{
+		for(j = 0; j < width; ++j)
+		{
+			if(dst.at<uchar>(i,j) != 0) dst.at<uchar>(i,j) = 255;
+		}
+	}
+	bitwise_not(dst, dst);
+
+}
+
+
+void CThinning::Index(Mat& src, Mat& dst)
+    {
+
+	src.copyTo(dst);
+	bitwise_not(dst, dst);
+
+    //    P0 P1 P2
+    //    P7    P3
+    //    P6 P5 P4
+    unsigned char deletemark[256] = {
+        0,0,0,0,0,0,0,1,    0,0,1,1,0,0,1,1,
+        0,0,0,0,0,0,0,0,    0,0,1,1,1,0,1,1,
+        0,0,0,0,0,0,0,0,    1,0,0,0,1,0,1,1,
+        0,0,0,0,0,0,0,0,    1,0,1,1,1,0,1,1,
+        0,0,0,0,0,0,0,0,    0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,    0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,    1,0,0,0,1,0,1,1,
+        1,0,0,0,0,0,0,0,    1,0,1,1,1,0,1,1,
+        0,0,1,1,0,0,1,1,    0,0,0,1,0,0,1,1,
+        0,0,0,0,0,0,0,0,    0,0,0,1,0,0,1,1,
+        1,1,0,1,0,0,0,1,    0,0,0,0,0,0,0,0,
+        1,1,0,1,0,0,0,1,    1,1,0,0,1,0,0,0,
+        0,1,1,1,0,0,1,1,    0,0,0,1,0,0,1,1,
+        0,0,0,0,0,0,0,0,    0,0,0,0,0,1,1,1,
+        1,1,1,1,0,0,1,1,    1,1,0,0,1,1,0,0,
+        1,1,1,1,0,0,1,1,    1,1,0,0,1,1,0,0
+        };//索引
+    int i, j;
+    int width, height;
+    //之所以减1，是方便处理8邻域，防止越界
+    width = src.cols -1;
+    height = src.rows -1;
+    int step = src.step;
+    int  p0, p1, p2,p3,p4,p5,p6,p7;
+    uchar* img;
+    bool ifEnd;
+    bool border = false; //交换删除的次序，防止从一边细化
+    while(1)
+        {
+
+        border = !border;
+        img = dst.data;
+        for(i = 1; i < height; i++)
+            {
+            img += step;
+            for(j =1; j<width; j++)
+                {
+                uchar* p = img + j;
+                //如果p点是背景点,继续循环
+                if(p[0]==0) continue;
+                p0 = p[-step-1]>0?1:0;
+                p1 = p[-step]>0?1:0;
+                p2 = p[-step+1]>0?1:0;
+                p3 = p[1]>0?1:0;
+                p4 = p[step+1]>0?1:0;
+                p5 = p[step]>0?1:0;
+                p6 = p[step-1]>0?1:0;
+                p7 = p[-1]>0?1:0;
+
+                //如果sum等于0，则不是内部点，是轮廓点，设置其像素值为2
+                int sum;
+                sum =  p0 & p1 & p2 & p3 & p4 & p5 & p6 & p7;
+
+                //判断是否是邻接点或孤立点,0,1分别对于那个孤立点和端点
+                if(sum==0)
+                    {
+                    dst.at<uchar>(i,j) = 4; //满足删除条件，设置当前像素为0
+                    }
+
+                }
+            }
+        //printf("\n");
+        //PrintMat(dst);
+        //执行删除操作
+        ifEnd = false;
+
+        img = dst.data;
+        for(i = 1; i < height; i++)
+            {
+            img += step;
+            for(j =1; j<width; j+=3)
+                {
+                uchar* p = img + j;
+                //如果p点是背景点,继续循环
+                if(p[0]!=4) continue;
+                p0 = p[-step-1]>0?1:0;
+                p1 = p[-step]>0?1:0;
+                p2 = p[-step+1]>0?1:0;
+                p3 = p[1]>0?1:0;
+                p4 = p[step+1]>0?1:0;
+                p5 = p[step]>0?1:0;
+                p6 = p[step-1]>0?1:0;
+                p7 = p[-1]>0?1:0;
+
+                p1 = p1<<1;
+                p2 = p2<<2;
+                p3 = p3 <<3;
+                p4 = p4<<4;
+                p5 = p5<<5;
+                p6 = p6 <<6;
+                p7 = p7 << 7;
+
+                //求的8邻域在索引表中的索引
+                int sum;
+                sum = p0 | p1 | p2 | p3 | p4 | p5 | p6 | p7;
+
+                //判断是否是邻接点或孤立点,0,1分别对于那个孤立点和端点
+                if(deletemark[sum] == 1)
+                    {
+                    dst.at<uchar>(i,j) = 0; //满足删除条件，设置当前像素为0
+                    ifEnd = true;
+                    }
+
+                }
+            }
+
+        img = dst.data;
+        for(i = 1; i < height; i++)
+            {
+            img += step;
+            for(j =2; j<width; j+=3)
+                {
+                uchar* p = img + j;
+                //如果p点是背景点,继续循环
+                if(p[0]!=4) continue;
+                p0 = p[-step-1]>0?1:0;
+                p1 = p[-step]>0?1:0;
+                p2 = p[-step+1]>0?1:0;
+                p3 = p[1]>0?1:0;
+                p4 = p[step+1]>0?1:0;
+                p5 = p[step]>0?1:0;
+                p6 = p[step-1]>0?1:0;
+                p7 = p[-1]>0?1:0;
+
+                p1 = p1<<1;
+                p2 = p2<<2;
+                p3 = p3 <<3;
+                p4 = p4<<4;
+                p5 = p5<<5;
+                p6 = p6 <<6;
+                p7 = p7 << 7;
+
+                //求的8邻域在索引表中的索引
+                int sum;
+                sum = p0 | p1 | p2 | p3 | p4 | p5 | p6 | p7;
+
+                //判断是否是邻接点或孤立点,0,1分别对于那个孤立点和端点
+                if(deletemark[sum] == 1)
+                    {
+                    dst.at<uchar>(i,j) = 0; //满足删除条件，设置当前像素为0
+                    ifEnd = true;
+                    }
+
+                }
+            }
+
+        img = dst.data;
+        for(i = 1; i < height; i++)
+            {
+            img += step;
+            for(j =3; j<width; j+=3)
+                {
+                uchar* p = img + j;
+                //如果p点是背景点,继续循环
+                if(p[0]!=4) continue;
+                p0 = p[-step-1]>0?1:0;
+                p1 = p[-step]>0?1:0;
+                p2 = p[-step+1]>0?1:0;
+                p3 = p[1]>0?1:0;
+                p4 = p[step+1]>0?1:0;
+                p5 = p[step]>0?1:0;
+                p6 = p[step-1]>0?1:0;
+                p7 = p[-1]>0?1:0;
+
+                p1 = p1<<1;
+                p2 = p2<<2;
+                p3 = p3 <<3;
+                p4 = p4<<4;
+                p5 = p5<<5;
+                p6 = p6 <<6;
+                p7 = p7 << 7;
+
+                //求的8邻域在索引表中的索引
+                int sum;
+                sum = p0 | p1 | p2 | p3 | p4 | p5 | p6 | p7;
+
+                //判断是否是邻接点或孤立点,0,1分别对于那个孤立点和端点
+                if(deletemark[sum] == 1)
+                    {
+                    dst.at<uchar>(i,j) = 0; //满足删除条件，设置当前像素为0
+                    ifEnd = true;
+                    }
+
+                }
+            }
+
+        //printf("\n");
+        //PrintMat(dst);
+        //printf("\n");
+
+        //已经没有可以细化的像素了，则退出迭代
+        if(!ifEnd) break;
         }
 
+	for(i = 0; i < height; ++i)
+	{
+		for(j = 0; j < width; ++j)
+		{
+			if(dst.at<uchar>(i,j) != 0) dst.at<uchar>(i,j) = 255;
+		}
+	}
+	bitwise_not(dst, dst);
+
     }
+
+
+void CThinning::Morphology(Mat &src, Mat &dst)
+{
+	src.copyTo(dst);
+	bitwise_not(dst, dst);
+
+    cv::Mat skel(dst.size(), CV_8UC1, cv::Scalar(0)); 
+    cv::Mat temp(dst.size(), CV_8UC1);
+
+    cv::Mat element = cv::getStructuringElement(cv::MORPH_CROSS, cv::Size(3, 3)); 
+    bool done; 
+    do 
+    { 
+        cv::morphologyEx(dst, temp, cv::MORPH_OPEN, element); 
+        cv::bitwise_not(temp, temp); 
+        cv::bitwise_and(dst, temp, temp); 
+        cv::bitwise_or(skel, temp, skel); 
+        cv::erode(dst, dst, element);
+
+        double max; 
+        cv::minMaxLoc(dst, 0, &max); 
+        done = (max == 0); 
+    } while (!done);
+
+    dst = skel;
+	bitwise_not(dst, dst);
+}

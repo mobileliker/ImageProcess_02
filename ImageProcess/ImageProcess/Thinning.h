@@ -26,5 +26,7 @@ public:
 	int Hilditch2(Mat, Mat&);
 	int Pavlidis(Mat, Mat&);
 	void Pavlidis2(Mat&, Mat&);
+	void Index(Mat&, Mat&);
+	void Morphology(Mat&, Mat&);
 };
 

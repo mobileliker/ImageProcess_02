@@ -88,4 +88,9 @@ public:
 	afx_msg void OnThinningHilditch1b();
 	afx_msg void OnThinningHilditch2b();
 	afx_msg void OnThinningPavlidis();
+	afx_msg void OnThinningIndex();
+	afx_msg void OnThinningPavlidisb();
+	afx_msg void OnThinningIndexb();
+	afx_msg void OnThinningMorphology();
+	afx_msg void OnThinningMorphologyb();
 };

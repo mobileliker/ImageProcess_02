@@ -121,6 +121,11 @@ BEGIN_MESSAGE_MAP(CImageProcessDlg, CDialogEx)
 	ON_COMMAND(ID_THINNING_HILDITCH1B, &CImageProcessDlg::OnThinningHilditch1b)
 	ON_COMMAND(ID_THINNING_HILDITCH2B, &CImageProcessDlg::OnThinningHilditch2b)
 	ON_COMMAND(ID_THINNING_PAVLIDIS, &CImageProcessDlg::OnThinningPavlidis)
+	ON_COMMAND(ID_THINNING_INDEX, &CImageProcessDlg::OnThinningIndex)
+	ON_COMMAND(ID_THINNING_PAVLIDISB, &CImageProcessDlg::OnThinningPavlidisb)
+	ON_COMMAND(ID_THINNING_INDEXB, &CImageProcessDlg::OnThinningIndexb)
+	ON_COMMAND(ID_THINNING_MORPHOLOGY, &CImageProcessDlg::OnThinningMorphology)
+	ON_COMMAND(ID_THINNING_MORPHOLOGYB, &CImageProcessDlg::OnThinningMorphologyb)
 END_MESSAGE_MAP()
 
 
@@ -1053,4 +1058,111 @@ void CImageProcessDlg::OnThinningPavlidis()
 	Mat m_thinning;
 	iThinning.Pavlidis2(m_cur, m_thinning);
 	ShowCurImage(m_thinning);
+}
+
+
+void CImageProcessDlg::OnThinningIndex()
+{	
+	CThinning iThinning;
+	iThinning.setDebug(CThinning::DEBUG_OPEN);
+	Mat m_thinning;
+	iThinning.Index(m_cur, m_thinning);
+	ShowCurImage(m_thinning);
+}
+
+
+void CImageProcessDlg::OnThinningPavlidisb()
+{
+	CThinning iThinning;
+	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+	{	
+		Mat dst;
+
+		string str = m_images[v_i].GetBuffer(0);
+		
+		int index1 = str.find_last_of("\\");
+		int index2 = str.find_last_of(".");
+		string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+		Mat src = imread(str, 0);
+	
+		iThinning.Pavlidis2(src, dst);
+
+		//if (result == 0)
+		//{
+			std::stringstream ss(std::stringstream::in | std::stringstream::out);
+			ss << this->m_savepath << "\\" << name << ".bmp";
+			imwrite(ss.str(), dst);
+		//}
+	}
+
+	MessageBox("Finish");
+}
+
+
+void CImageProcessDlg::OnThinningIndexb()
+{
+	CThinning iThinning;
+	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+	{	
+		Mat dst;
+
+		string str = m_images[v_i].GetBuffer(0);
+		
+		int index1 = str.find_last_of("\\");
+		int index2 = str.find_last_of(".");
+		string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+		Mat src = imread(str, 0);
+	
+		iThinning.Index(src, dst);
+
+		//if (result == 0)
+		//{
+			std::stringstream ss(std::stringstream::in | std::stringstream::out);
+			ss << this->m_savepath << "\\" << name << ".bmp";
+			imwrite(ss.str(), dst);
+		//}
+	}
+
+	MessageBox("Finish");
+}
+
+
+void CImageProcessDlg::OnThinningMorphology()
+{	
+	CThinning iThinning;
+	iThinning.setDebug(CThinning::DEBUG_OPEN);
+	Mat m_thinning;
+	iThinning.Morphology(m_cur, m_thinning);
+	ShowCurImage(m_thinning);
+}
+
+
+void CImageProcessDlg::OnThinningMorphologyb()
+{	
+	CThinning iThinning;
+	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+	{	
+		Mat dst;
+
+		string str = m_images[v_i].GetBuffer(0);
+		
+		int index1 = str.find_last_of("\\");
+		int index2 = str.find_last_of(".");
+		string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+		Mat src = imread(str, 0);
+	
+		iThinning.Morphology(src, dst);
+
+		//if (result == 0)
+		//{
+			std::stringstream ss(std::stringstream::in | std::stringstream::out);
+			ss << this->m_savepath << "\\" << name << ".bmp";
+			imwrite(ss.str(), dst);
+		//}
+	}
+
+	MessageBox("Finish");
 }
