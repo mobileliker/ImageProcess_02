@@ -12,6 +12,7 @@
 #include "Binary.h"
 #include "Blur.h"
 #include "Thinning.h"
+#include "Complete.h"
 
 #include "InputNumDlg.h"
 
@@ -126,6 +127,9 @@ BEGIN_MESSAGE_MAP(CImageProcessDlg, CDialogEx)
 	ON_COMMAND(ID_THINNING_INDEXB, &CImageProcessDlg::OnThinningIndexb)
 	ON_COMMAND(ID_THINNING_MORPHOLOGY, &CImageProcessDlg::OnThinningMorphology)
 	ON_COMMAND(ID_THINNING_MORPHOLOGYB, &CImageProcessDlg::OnThinningMorphologyb)
+	ON_COMMAND(ID_COMPLETE_FINDENDPOINT, &CImageProcessDlg::OnCompleteFindendpoint)
+	ON_COMMAND(ID_COMPLETE_FINDISOLATEPOINT, &CImageProcessDlg::OnCompleteFindisolatepoint)
+	ON_COMMAND(ID_COMPLETE_COMPLETEISOLATEPOINT, &CImageProcessDlg::OnCompleteCompleteisolatepoint)
 END_MESSAGE_MAP()
 
 
@@ -1165,4 +1169,33 @@ void CImageProcessDlg::OnThinningMorphologyb()
 	}
 
 	MessageBox("Finish");
+}
+
+
+void CImageProcessDlg::OnCompleteFindisolatepoint()
+{
+	CComplete iComplete;
+	iComplete.setDebug(CComplete::DEBUG_OPEN);
+	m_isolatePoints = iComplete.FindIsolatePoint(m_cur);
+	MessageBox("Finish");
+}
+
+
+void CImageProcessDlg::OnCompleteFindendpoint()
+{
+	CComplete iComplete;
+	iComplete.setDebug(CComplete::DEBUG_OPEN);
+	m_endPoints = iComplete.FindEndPoint(m_cur);
+	MessageBox("Finish");
+}
+
+
+
+
+void CImageProcessDlg::OnCompleteCompleteisolatepoint()
+{
+	CComplete iComplete;
+	Mat dst;
+	m_endPoints = iComplete.CompeleteIsolatePoint(m_cur, m_isolatePoints, dst);
+	ShowCurImage(dst);
 }

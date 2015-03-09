@@ -41,6 +41,9 @@ public:
 	Mat m_cur;
 	Mat m_channel;
 	Mat m_binary;
+	Vector<Point> m_endPoints;
+	Vector<Point> m_isolatePoints;
+
 	afx_msg void OnChannelGary();
 	afx_msg void OnHistogramShow();
 	afx_msg void OnBnClickedButtonOpen();
@@ -93,4 +96,7 @@ public:
 	afx_msg void OnThinningIndexb();
 	afx_msg void OnThinningMorphology();
 	afx_msg void OnThinningMorphologyb();
+	afx_msg void OnCompleteFindendpoint();
+	afx_msg void OnCompleteFindisolatepoint();
+	afx_msg void OnCompleteCompleteisolatepoint();
 };
