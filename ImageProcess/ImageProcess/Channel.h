@@ -14,6 +14,10 @@ public:
 	static const int DEBUG_OPEN = 1;
 	static const int DEBUG_CLOSE = 0;
 
+	static const int RGB_B = 0;
+	static const int RGB_G = 1;
+	static const int RGB_R = 2;
+
 
 protected:
 	
@@ -21,5 +25,7 @@ protected:
 	int m_debug;
 public:
 	int Gray(Mat, Mat&);
+	int iRGB(Mat, Mat&, const int);
+	int iHSV(Mat, Mat&, const int);
 };
 

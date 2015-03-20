@@ -104,4 +104,9 @@ public:
 	afx_msg void OnBinaryNotsu();
 	afx_msg void OnBinaryMaxentropymark();
 	afx_msg void OnBinaryIterationmark();
+	afx_msg void OnChannelRgb();
+	afx_msg void OnChannelRgbb();
+	afx_msg void OnChannelHsv();
+	afx_msg void OnChannelHsvb();
+	afx_msg void OnBinaryOtsumarkb();
 };

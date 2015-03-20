@@ -15,6 +15,7 @@
 #include "Complete.h"
 
 #include "InputNumDlg.h"
+#include "Select3Dlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -135,6 +136,11 @@ BEGIN_MESSAGE_MAP(CImageProcessDlg, CDialogEx)
 	ON_COMMAND(ID_BINARY_NOTSU, &CImageProcessDlg::OnBinaryNotsu)
 	ON_COMMAND(ID_BINARY_MAXENTROPYMARK, &CImageProcessDlg::OnBinaryMaxentropymark)
 	ON_COMMAND(ID_BINARY_ITERATIONMARK, &CImageProcessDlg::OnBinaryIterationmark)
+	ON_COMMAND(ID_CHANNEL_RGB, &CImageProcessDlg::OnChannelRgb)
+	ON_COMMAND(ID_CHANNEL_RGBB, &CImageProcessDlg::OnChannelRgbb)
+	ON_COMMAND(ID_CHANNEL_HSV, &CImageProcessDlg::OnChannelHsv)
+	ON_COMMAND(ID_CHANNEL_HSVB, &CImageProcessDlg::OnChannelHsvb)
+	ON_COMMAND(ID_BINARY_OTSUMARKB, &CImageProcessDlg::OnBinaryOtsumarkb)
 END_MESSAGE_MAP()
 
 
@@ -1286,4 +1292,117 @@ void CImageProcessDlg::OnBinaryIterationmark()
 		}
 	}
 	ShowCurImage(dst);
+}
+
+
+void CImageProcessDlg::OnChannelRgb()
+{
+	CSelect3Dlg dlg;
+	dlg.m_str = "Radio1:B,Radio2:G,Radio3:R";
+	dlg.m_select = 0;
+	if(dlg.DoModal())
+	{
+		int type = dlg.m_select;
+		CChannel ichannel;
+		ichannel.setDebug(CChannel::DEBUG_OPEN);
+		Mat dst;
+		ichannel.iRGB(m_cur, dst, type);		
+		ShowCurImage(dst);
+	}
+}
+
+
+void CImageProcessDlg::OnChannelRgbb()
+{	
+	CSelect3Dlg dlg;
+	dlg.m_str = "Radio1:B,Radio2:G,Radio3:R";
+	dlg.m_select = 0;
+	if(dlg.DoModal())
+	{
+		int type = dlg.m_select;
+		CChannel iChannel;
+		for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+		{	
+			Mat dst;
+
+			string str = m_images[v_i].GetBuffer(0);
+		
+			int index1 = str.find_last_of("\\");
+			int index2 = str.find_last_of(".");
+			string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+			Mat src = imread(str, 1);
+	
+			int result = iChannel.iRGB(src, dst, type);
+
+			if (0 == result)
+			{
+				std::stringstream ss(std::stringstream::in | std::stringstream::out);
+				ss << this->m_savepath << "\\" << name << ".bmp";
+				imwrite(ss.str(), dst);
+			}
+		}
+	}
+
+
+	MessageBox("Finish");
+}
+
+
+void CImageProcessDlg::OnChannelHsv()
+{
+	CSelect3Dlg dlg;
+	dlg.m_str = "Radio1:H,Radio2:S,Radio3:V";
+	dlg.m_select = 0;
+	if(dlg.DoModal())
+	{
+		int type = dlg.m_select;
+		CChannel ichannel;
+		ichannel.setDebug(CChannel::DEBUG_OPEN);
+		Mat dst;
+		ichannel.iHSV(m_cur, dst, type);		
+		ShowCurImage(dst);
+	}
+}
+
+
+void CImageProcessDlg::OnChannelHsvb()
+{	
+	CSelect3Dlg dlg;
+	dlg.m_str = "Radio1:H,Radio2:S,Radio3:V";
+	dlg.m_select = 0;
+	if(dlg.DoModal())
+	{
+		int type = dlg.m_select;
+		CChannel iChannel;
+		for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+		{	
+			Mat dst;
+
+			string str = m_images[v_i].GetBuffer(0);
+		
+			int index1 = str.find_last_of("\\");
+			int index2 = str.find_last_of(".");
+			string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+			Mat src = imread(str, 1);
+	
+			int result = iChannel.iHSV(src, dst, type);
+
+			if (0 == result)
+			{
+				std::stringstream ss(std::stringstream::in | std::stringstream::out);
+				ss << this->m_savepath << "\\" << name << ".bmp";
+				imwrite(ss.str(), dst);
+			}
+		}
+	}
+
+
+	MessageBox("Finish");
+}
+
+
+void CImageProcessDlg::OnBinaryOtsumarkb()
+{
 }
