@@ -109,4 +109,6 @@ public:
 	afx_msg void OnChannelHsv();
 	afx_msg void OnChannelHsvb();
 	afx_msg void OnBinaryOtsumarkb();
+	afx_msg void OnBinaryMaxentropy32869();
+	afx_msg void OnSegmetationCanny();
 };
