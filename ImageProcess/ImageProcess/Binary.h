@@ -22,13 +22,18 @@ protected:
 public:
 	int Mode(Mat, Mat&);
 	int OTSU(Mat, Mat&);
+	int OTSU(Mat, Mat, Mat&);
 	int MaxEntropy(Mat, Mat&);
+	int MaxEntropy(Mat, Mat, Mat&);
 
 	// nMaxIter = 0 means iterate until find the best answer.
 	int Iteration(Mat, Mat&, const int nMaxIter = 10);
 
-	int otsuThreshold(Mat src);
+	int otsuThreshold(Mat);
+	int otsuThreshold(Mat, Mat);
 	int Mannal(Mat, Mat&, const int);
+
+	int DoubleOTSU(Mat, Mat&);
 
 };
 

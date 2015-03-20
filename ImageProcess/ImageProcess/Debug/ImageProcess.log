@@ -1,20 +1,24 @@
-﻿生成启动时间为 3/9/2015 4:57:10 PM。
+﻿生成启动时间为 3/20/2015 9:58:25 AM。
      1>项目“D:\Data\Code\ImageProcess_02\ImageProcess\ImageProcess\ImageProcess.vcxproj”在节点 2 上(build 个目标)。
      1>InitializeBuildStatus:
          正在创建“Debug\ImageProcess.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
        ClCompile:
          所有输出均为最新。
-         d:\ProgramFiles86\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _MBCS /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\ImageProcess.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Complete.cpp ImageProcessDlg.cpp
-         Complete.cpp
+         d:\ProgramFiles86\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _MBCS /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\ImageProcess.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Binary.cpp ImageProcessDlg.cpp
+         ImageProcessDlg.cpp
      1>d:\program files\opencv2.4.8\build\include\opencv2\legacy\blobtrack.hpp(187): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  d:\programfiles86\microsoft visual studio 10.0\vc\include\string.h(105) : 参见“strcpy”的声明
      1>d:\program files\opencv2.4.8\build\include\opencv2\legacy\blobtrack.hpp(256): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  d:\programfiles86\microsoft visual studio 10.0\vc\include\string.h(110) : 参见“strcat”的声明
-     1>d:\data\code\imageprocess_02\imageprocess\imageprocess\complete.cpp(117): warning C4101: “y”: 未引用的局部变量
-     1>d:\data\code\imageprocess_02\imageprocess\imageprocess\complete.cpp(117): warning C4101: “x”: 未引用的局部变量
+         Binary.cpp
+     1>d:\program files\opencv2.4.8\build\include\opencv2\legacy\blobtrack.hpp(187): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\programfiles86\microsoft visual studio 10.0\vc\include\string.h(105) : 参见“strcpy”的声明
+     1>d:\program files\opencv2.4.8\build\include\opencv2\legacy\blobtrack.hpp(256): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\programfiles86\microsoft visual studio 10.0\vc\include\string.h(110) : 参见“strcat”的声明
+     1>d:\data\code\imageprocess_02\imageprocess\imageprocess\binary.cpp(266): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\data\code\imageprocess_02\imageprocess\imageprocess\binary.cpp(300): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>d:\data\code\imageprocess_02\imageprocess\imageprocess\binary.cpp(420): warning C4244: “=”: 从“double”转换到“byte”，可能丢失数据
          正在生成代码...
-         正在跳过...(未检测到相关更改)
-         ImageProcessDlg.cpp
        ResourceCompile:
          所有输出均为最新。
        ManifestResourceCompile:
@@ -46,4 +50,4 @@
 
 生成成功。
 
-已用时间 00:00:02.63
+已用时间 00:00:04.31

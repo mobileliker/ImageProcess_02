@@ -130,6 +130,10 @@ BEGIN_MESSAGE_MAP(CImageProcessDlg, CDialogEx)
 	ON_COMMAND(ID_COMPLETE_FINDENDPOINT, &CImageProcessDlg::OnCompleteFindendpoint)
 	ON_COMMAND(ID_COMPLETE_FINDISOLATEPOINT, &CImageProcessDlg::OnCompleteFindisolatepoint)
 	ON_COMMAND(ID_COMPLETE_COMPLETEISOLATEPOINT, &CImageProcessDlg::OnCompleteCompleteisolatepoint)
+	ON_COMMAND(ID_COMPLETE_COMPLETEENDPOINT, &CImageProcessDlg::OnCompleteCompleteendpoint)
+	ON_COMMAND(ID_BINARY_ALLAUTO, &CImageProcessDlg::OnBinaryAllauto)
+	ON_COMMAND(ID_BINARY_NOTSU, &CImageProcessDlg::OnBinaryNotsu)
+	ON_COMMAND(ID_BINARY_MAXENTROPYMARK, &CImageProcessDlg::OnBinaryMaxentropymark)
 END_MESSAGE_MAP()
 
 
@@ -648,7 +652,7 @@ void CImageProcessDlg::OnBinaryMannal()
 	CInputNumDlg dlg;
 	CBinary binary;
 
-	dlg.m_num = binary.otsuThreshold(m_cur);
+	//dlg.m_num = binary.otsuThreshold(m_cur);
 
 	if(dlg.DoModal())
 	{
@@ -1197,5 +1201,66 @@ void CImageProcessDlg::OnCompleteCompleteisolatepoint()
 	CComplete iComplete;
 	Mat dst;
 	m_endPoints = iComplete.CompeleteIsolatePoint(m_cur, m_isolatePoints, dst);
+	ShowCurImage(dst);
+}
+
+
+void CImageProcessDlg::OnCompleteCompleteendpoint()
+{
+	CComplete iComplete;
+	iComplete.setDebug(CComplete::DEBUG_OPEN);
+	Mat dst;
+	m_endPoints = iComplete.CompeleteEndPoint(m_cur, m_endPoints, dst);
+	ShowCurImage(dst);
+}
+
+
+void CImageProcessDlg::OnBinaryAllauto()
+{
+	CBinary binary;
+
+	//dlg.m_num = binary.otsuThreshold(m_cur);
+
+	for(int i = 0; i <= 255; ++i)
+	{
+		Mat dst;
+		binary.Mannal(m_cur, dst, i);
+
+		std::stringstream ss(std::stringstream::in | std::stringstream::out);
+		ss  << "tmp/binary_" << i << ".jpg";
+		imwrite(ss.str(), dst);
+	}
+}
+
+
+void CImageProcessDlg::OnBinaryNotsu()
+{	
+	CBinary binary;
+	binary.setDebug(CBinary::DEBUG_OPEN);
+
+	binary.DoubleOTSU(m_cur, m_binary);
+
+	ShowCurImage(m_binary);
+}
+
+
+void CImageProcessDlg::OnBinaryMaxentropymark()
+{
+	CBinary ibinary;
+	ibinary.setDebug(CBinary::DEBUG_OPEN);
+
+	Mat mark;
+	Mat dst;
+	ibinary.OTSU(m_cur, mark);
+
+	ibinary.MaxEntropy(m_cur, mark, dst);
+	for(int i = 0; i < dst.rows; ++i)
+	{
+		for(int j = 0; j < dst.cols; ++j)
+		{
+			if(!mark.at<uchar>(i, j))   dst.at<uchar>(i, j) = 0;
+			else dst.at<uchar>(i, j) = 255 - dst.at<uchar>(i, j);
+		}
+	}
 	ShowCurImage(dst);
 }

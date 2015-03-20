@@ -99,4 +99,8 @@ public:
 	afx_msg void OnCompleteFindendpoint();
 	afx_msg void OnCompleteFindisolatepoint();
 	afx_msg void OnCompleteCompleteisolatepoint();
+	afx_msg void OnCompleteCompleteendpoint();
+	afx_msg void OnBinaryAllauto();
+	afx_msg void OnBinaryNotsu();
+	afx_msg void OnBinaryMaxentropymark();
 };

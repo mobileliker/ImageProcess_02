@@ -1,8 +1,9 @@
 #include "StdAfx.h"
 #include "Complete.h"
+#include <fstream>
 
 
-CComplete::CComplete(void): m_debug(DEFAULT_DEBUG), m_isolateAlpha(DEFAULT_ISOLATEALPHA)
+CComplete::CComplete(void): m_debug(DEFAULT_DEBUG), m_isolateAlpha(DEFAULT_ISOLATEALPHA) , m_endpointAlpha(DEFAULT_ENDPOINTALPHA)
 {
 }
 
@@ -89,14 +90,16 @@ Vector<Point> CComplete::FindEndPoint(Mat src)
 
 	if(m_debug)
 	{
+		Mat dst;
+		src.copyTo(dst);
 		for(Vector<Point>::iterator it = endPoints.begin(); it != endPoints.end(); ++it)
 		{
-			src.at<uchar>(it->y, it->x) = 128;
-			for(k = 0; k < 8; ++k) src.at<uchar>(it->y + idx_y[k], it->x + idx_x[k]) = 128;
+			dst.at<uchar>(it->y, it->x) = 128;
+			for(k = 0; k < 8; ++k) dst.at<uchar>(it->y + idx_y[k], it->x + idx_x[k]) = 128;
 		}
 		std::stringstream ss(std::stringstream::in | std::stringstream::out);
 		ss << "tmp/debug_complete_markendpoint.bmp";
-		imwrite(ss.str(), src);
+		imwrite(ss.str(), dst);
 	}
 
 	return endPoints;
@@ -125,7 +128,7 @@ int CComplete::CompeleteIsolatePoint(Mat src, Vector<Point> points, Mat& dst)
 				{
 					int sx = it->x + idx_sx[k] * alpha + idx_dx[k] * d;
 					int sy = it->y + idx_sy[k] * alpha + idx_dy[k] * d;
-					int value = dst.at<uchar>(sy, sx);
+					if(sx < 0 || sx >= dst.cols || sy < 0 || sy >= dst.rows) continue;
 					if(dst.at<uchar>(sy, sx) != 0)
 					{
 						Point point2;
@@ -149,5 +152,77 @@ end:
 
 int CComplete::CompeleteEndPoint(Mat src, Vector<Point> points, Mat& dst)
 {
+	src.copyTo(dst);
+
+	bitwise_not(dst, dst);
+
+	int idx_x[] = {0,1,1,1,0,-1,-1,-1};
+	int idx_y[] = {-1,-1,0,1,1,1,0,-1};
+	int i, j;
+	int x, y;
+
+	vector< vector<Point>> vv_slopepoints;
+	for(Vector<Point>::iterator it = points.begin(); it != points.end(); ++it)
+	{
+		x = it->x;
+		y = it->y;
+		int next_x;
+		int next_y;
+		int pre_x = -1;
+		int pre_y = -1;
+		int sum_x = 0;
+		int sum_y = 0;
+		vector<Point> v_slopepoints;
+		for(i = 0; i < m_endpointAlpha; ++i)
+		{
+			int count = 0;
+			for(j = 0; j < 8; ++j)
+			{
+				if( y + idx_y[j] < 0 || y + idx_y[j] >= dst.rows || x + idx_x[j] < 0 || y + idx_y[j] >= dst.cols) continue;
+				if(dst.at<uchar>(y + idx_y[j], x + idx_x[j]) != 0 && (y + idx_y[j] != pre_y || x + idx_x[j] != pre_x))
+				{
+					++count;
+					next_y = y + idx_y[j];
+					next_x = x + idx_x[j];
+				}
+			}
+			if(1 == count)
+			{
+				Point sp;
+				sp.x = next_x;
+				sp.y = next_y;
+				v_slopepoints.push_back(sp);
+
+				sum_x += next_x;
+				sum_y += next_y;
+				pre_x = x;
+				pre_y = y;
+				x = next_x;
+				y = next_y;
+			}
+			else break;
+		}
+
+		vv_slopepoints.push_back(v_slopepoints);
+	}
+	
+	bitwise_not(dst, dst);
+
+	if(m_debug)
+	{
+		std::ofstream outfile("tmp/complete_endpoint_slope.txt");
+		for(i = 0; i < points.size(); ++i)
+		{
+			outfile << "(" << points[i].x << "," << points[i].y << "):";
+			for(j = 0; j < vv_slopepoints[i].size(); ++j)
+			{
+				outfile << "(" << vv_slopepoints[i][j].x << "," << vv_slopepoints[i][j].y << "),";
+			}
+			outfile << std::endl;
+		}
+		outfile.close();
+	}
+
+
 	return 0;
 }
