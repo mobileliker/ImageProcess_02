@@ -460,6 +460,77 @@ int DetectThreshold(IplImage*img, int nMaxIter, int& iDiffRec) //·§Öµ·Ö¸î£ºµü´ú·
 	return iThrehold;
 }
 
+int DetectThreshold(IplImage*img, IplImage *mark, int nMaxIter, int& iDiffRec) //·§Öµ·Ö¸î£ºµü´ú·¨
+{
+	//Í¼ÏñĞÅÏ¢
+	int height = img->height;
+	int width = img->width;
+	int step = img->widthStep/sizeof(uchar);
+	uchar *data = (uchar*)img->imageData;
+	iDiffRec =0;
+	int F[256]={ 0 }; //Ö±·½Í¼Êı×é
+	int iTotalGray=0;//»Ò¶ÈÖµºÍ
+	int iTotalPixel =0;//ÏñËØÊıºÍ
+	byte bt;//Ä³µãµÄÏñËØÖµ
+	uchar iThrehold,iNewThrehold;//·§Öµ¡¢ĞÂ·§Öµ
+	uchar iMaxGrayValue=0,iMinGrayValue=255;//Ô­Í¼ÏñÖĞµÄ×î´ó»Ò¶ÈÖµºÍ×îĞ¡»Ò¶È	Öµ
+	uchar iMeanGrayValue1,iMeanGrayValue2;
+
+	//»ñÈ¡(i,j)µÄÖµ£¬´æÓÚÖ±·½Í¼Êı×éF
+	for(int i=0;i<width;i++)
+	{
+		for(int j=0;j<height;j++)
+		{
+			CvScalar s1 = cvGet2D(mark, j, i);
+			if(s1.val[0] != 0)
+			{
+				CvScalar scalar =cvGet2D(img,j,i);
+				bt = scalar.val[0];
+				if(bt<iMinGrayValue)
+				{
+					iMinGrayValue = bt;
+				}
+				if(bt>iMaxGrayValue)
+				{
+					iMaxGrayValue = bt;
+				}
+				F[bt]++;
+			}
+
+		}
+	}
+
+	iThrehold =0;//
+	iNewThrehold = (iMinGrayValue+iMaxGrayValue)/2;//³õÊ¼·§Öµ
+	iDiffRec = iMaxGrayValue - iMinGrayValue;
+	for(int a=0;(abs(iThrehold-iNewThrehold)>0.5)&&a<nMaxIter;a++)//µü´úÖĞÖ¹Ìõ¼ş
+	{
+		iThrehold = iNewThrehold;
+		//Ğ¡ÓÚµ±Ç°·§Öµ²¿·ÖµÄÆ½¾ù»Ò¶ÈÖµ
+		for(int i=iMinGrayValue;i<iThrehold;i++)
+		{
+			iTotalGray += F[i]*i;//F[]´æ´¢Í¼ÏñĞÅÏ¢
+			iTotalPixel += F[i];
+		}
+		iMeanGrayValue1 = (uchar)(iTotalGray/iTotalPixel);
+
+		//´óÓÚµ±Ç°·§Öµ²¿·ÖµÄÆ½¾ù»Ò¶ÈÖµ
+		iTotalPixel =0;
+		iTotalGray =0;
+		for(int j=iThrehold+1;j<iMaxGrayValue;j++)
+		{
+			iTotalGray += F[j]*j;//F[]´æ´¢Í¼ÏñĞÅÏ¢
+			iTotalPixel += F[j];
+		}
+		iMeanGrayValue2 = (uchar)(iTotalGray/iTotalPixel);
+		iNewThrehold = (iMeanGrayValue2+iMeanGrayValue1)/2; //ĞÂ·§Öµ
+		iDiffRec = abs(iMeanGrayValue2 - iMeanGrayValue1);
+	}
+
+	//cout<<"The Threshold of this Image in imgIteration is:"<<iThrehold<<endl;
+	return iThrehold;
+}
+
 int CBinary::Iteration(Mat src, Mat& dst, const int nMaxIter)
 {
 	IplImage i_src = src;
@@ -472,6 +543,25 @@ int CBinary::Iteration(Mat src, Mat& dst, const int nMaxIter)
 	{
 		std::stringstream ss(std::stringstream::in | std::stringstream::out);
 		ss << "tmp/debug_binary_iteration.bmp";
+		imwrite(ss.str(), dst);
+	}
+
+	return 0;
+}
+
+int CBinary::Iteration(Mat src, Mat mark, Mat &dst, const int nMaxIter)
+{
+	IplImage i_src = src;
+	IplImage i_mark = mark;
+	int iDiffRec;
+	int iter_threshold = DetectThreshold(&i_src, &i_mark, nMaxIter, iDiffRec);
+
+	threshold(src, dst, iter_threshold, 255, CV_THRESH_BINARY);
+
+	if(m_debug)
+	{
+		std::stringstream ss(std::stringstream::in | std::stringstream::out);
+		ss << "tmp/debug_binary_iteration_mark.bmp";
 		imwrite(ss.str(), dst);
 	}
 

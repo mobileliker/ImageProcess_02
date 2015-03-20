@@ -134,6 +134,7 @@ BEGIN_MESSAGE_MAP(CImageProcessDlg, CDialogEx)
 	ON_COMMAND(ID_BINARY_ALLAUTO, &CImageProcessDlg::OnBinaryAllauto)
 	ON_COMMAND(ID_BINARY_NOTSU, &CImageProcessDlg::OnBinaryNotsu)
 	ON_COMMAND(ID_BINARY_MAXENTROPYMARK, &CImageProcessDlg::OnBinaryMaxentropymark)
+	ON_COMMAND(ID_BINARY_ITERATIONMARK, &CImageProcessDlg::OnBinaryIterationmark)
 END_MESSAGE_MAP()
 
 
@@ -1254,6 +1255,28 @@ void CImageProcessDlg::OnBinaryMaxentropymark()
 	ibinary.OTSU(m_cur, mark);
 
 	ibinary.MaxEntropy(m_cur, mark, dst);
+	for(int i = 0; i < dst.rows; ++i)
+	{
+		for(int j = 0; j < dst.cols; ++j)
+		{
+			if(!mark.at<uchar>(i, j))   dst.at<uchar>(i, j) = 0;
+			else dst.at<uchar>(i, j) = 255 - dst.at<uchar>(i, j);
+		}
+	}
+	ShowCurImage(dst);
+}
+
+
+void CImageProcessDlg::OnBinaryIterationmark()
+{
+	CBinary ibinary;
+	ibinary.setDebug(CBinary::DEBUG_OPEN);
+
+	Mat mark;
+	Mat dst;
+	ibinary.OTSU(m_cur, mark);
+
+	ibinary.Iteration(m_cur, mark, dst);
 	for(int i = 0; i < dst.rows; ++i)
 	{
 		for(int j = 0; j < dst.cols; ++j)

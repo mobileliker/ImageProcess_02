@@ -103,4 +103,5 @@ public:
 	afx_msg void OnBinaryAllauto();
 	afx_msg void OnBinaryNotsu();
 	afx_msg void OnBinaryMaxentropymark();
+	afx_msg void OnBinaryIterationmark();
 };

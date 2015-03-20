@@ -28,6 +28,7 @@ public:
 
 	// nMaxIter = 0 means iterate until find the best answer.
 	int Iteration(Mat, Mat&, const int nMaxIter = 10);
+	int Iteration(Mat, Mat, Mat&, const int nMatIter = 10);
 
 	int otsuThreshold(Mat);
 	int otsuThreshold(Mat, Mat);
