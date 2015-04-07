@@ -779,7 +779,30 @@ void CImageProcessDlg::OnNoiseGussian()
 
 void CImageProcessDlg::OnFileSaveimage()
 {
+	CString filePath;
+	char szFilter[] = {"Text Files (*.bmp)|*.bmp||"};
+	CFileDialog dlg(FALSE,"bmp","dst",OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,szFilter,NULL);
 
+	if(dlg.DoModal() == IDOK)
+	{
+		filePath = dlg.GetPathName();
+	
+		//AfxMessageBox(filePath);
+
+		imwrite(filePath.GetBuffer(0), m_cur);
+
+	//	ofstream ipfile(filePath);
+
+	//	for(i = 0; i < v_area.size(); ++i)
+	//	{
+	//		Area area = v_area[i];
+	//		ipfile << (area.right - area.left) * (area.bottom - area.top) << " ";
+	//		ipfile << area.right << " " << area.left << " " << area.bottom << " " << area.top << endl;
+
+	}
+
+	//	ipfile.close();
+	//}
 }
 
 
