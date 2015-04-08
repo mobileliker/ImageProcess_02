@@ -1323,7 +1323,7 @@ void CImageProcessDlg::OnBinaryIterationmark()
 void CImageProcessDlg::OnChannelRgb()
 {
 	CSelect3Dlg dlg;
-	dlg.m_str = "Radio1:B,Radio2:G,Radio3:R";
+	dlg.m_str = "Radio1:B,Radio2:G,Radio3:R,Radio4:Max,Radio5:Average";
 	dlg.m_select = 0;
 	if(dlg.DoModal())
 	{

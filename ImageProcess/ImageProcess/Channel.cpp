@@ -34,10 +34,39 @@ int CChannel::Gray(Mat src, Mat& gray)
 int CChannel::iRGB(Mat src, Mat &dst, const int type)
 {
 	vector<Mat> channels;
+	split(src, channels);	
 
-	split(src, channels);
-
-	dst = channels.at(type);
+	if(3 == type)
+	{		
+		/*dst.create(src.rows, src.cols, CV_8UC(1));
+		for(int i = 0; i < dst.rows; ++i)
+		{
+			for(int j = 0; j < dst.cols; ++j)
+			{
+				
+				uchar value = src.at<Vec3b>(i, j)[0] > src.at<Vec3b>(i, j)[1] ? src.at<Vec3b>(i, j)[0] : src.at<Vec3b>(i, j)[1];
+				if(value < src.at<Vec3b>(i, j)[2]) value = src.at<Vec3b>(i, j)[2];
+				dst.at<uchar>(i, j) = value;
+			}
+		}*/
+		max(channels.at(0), channels.at(1), dst);
+		max(channels.at(2), dst, dst);
+	}
+	else if(4 == type)
+	{
+		dst.create(src.rows, src.cols, CV_8UC(1));
+		for(int i = 0; i < dst.rows; ++i)
+		{
+			for(int j = 0; j < dst.cols; ++j)
+			{
+				dst.at<uchar>(i, j) = (src.at<Vec3b>(i, j)[0] + src.at<Vec3b>(i, j)[1] + src.at<Vec3b>(i, j)[2]) / 3;  
+			}
+		}
+	}
+	else
+	{
+		dst = channels.at(type);
+	}
 
 	return 0;
 }
