@@ -144,6 +144,7 @@ BEGIN_MESSAGE_MAP(CImageProcessDlg, CDialogEx)
 	ON_COMMAND(ID_BINARY_MAXENTROPY32869, &CImageProcessDlg::OnBinaryMaxentropy32869)
 	ON_COMMAND(ID_SEGMETATION_CANNY, &CImageProcessDlg::OnSegmetationCanny)
 	ON_COMMAND(ID_BINARY_ITERATIONMARKB, &CImageProcessDlg::OnBinaryIterationmarkb)
+	ON_COMMAND(ID_BINARY_REMOVEMARK, &CImageProcessDlg::OnBinaryRemovemark)
 END_MESSAGE_MAP()
 
 
@@ -1549,4 +1550,53 @@ void CImageProcessDlg::OnBinaryIterationmarkb()
 	}
 
 	MessageBox("Finish");
+}
+
+
+void CImageProcessDlg::OnBinaryRemovemark()
+{
+	CBinary ibinary;
+	ibinary.setDebug(CBinary::DEBUG_OPEN);
+
+	Mat mark;
+	Mat dst;
+	ibinary.OTSU(m_cur, mark);
+	
+	int idx_x[] = {0,1,1,1,0,-1,-1,-1};
+	int idx_y[] = {-1,-1,0,1,1,1,0,-1};
+	Mat mark2;
+	mark.copyTo(mark2);
+	for(int k = 0; k < 3; ++k)
+	{
+		for(int i = 1; i < mark.rows - 1; ++i)
+		{
+			for(int j = 1; j < mark.cols - 1; ++j)
+			{	
+				int p;
+				if(mark.at<uchar>(i, j))
+				{
+					for(p = 0; p < 8; ++p) if(!mark.at<uchar>(i + idx_y[p], j + idx_x[p])) break;
+					if(p < 8) mark2.at<uchar>(i, j) = 0;
+				}
+			}
+		}
+		mark2.copyTo(mark);
+	}
+
+	ibinary.MaxEntropy(m_cur, mark, dst);
+
+
+	for(int i = 0; i < dst.rows; ++i)
+	{
+		for(int j = 0; j < dst.cols; ++j)
+		{
+			if(!mark.at<uchar>(i, j))   dst.at<uchar>(i, j) = 0;
+			else dst.at<uchar>(i, j) = 255 - dst.at<uchar>(i, j);
+		}
+	}
+
+
+
+	ShowCurImage(dst);
+
 }
