@@ -143,6 +143,7 @@ BEGIN_MESSAGE_MAP(CImageProcessDlg, CDialogEx)
 	ON_COMMAND(ID_BINARY_OTSUMARKB, &CImageProcessDlg::OnBinaryOtsumarkb)
 	ON_COMMAND(ID_BINARY_MAXENTROPY32869, &CImageProcessDlg::OnBinaryMaxentropy32869)
 	ON_COMMAND(ID_SEGMETATION_CANNY, &CImageProcessDlg::OnSegmetationCanny)
+	ON_COMMAND(ID_BINARY_ITERATIONMARKB, &CImageProcessDlg::OnBinaryIterationmarkb)
 END_MESSAGE_MAP()
 
 
@@ -319,6 +320,7 @@ void CImageProcessDlg::OnHistogramShow()
 {
 	Mat hist;
 	CHistogram histogram;
+	histogram.setDebug(CHistogram::DEBUG_OPEN);
 	histogram.Show(m_cur, hist);
 	imshow("Histogram", hist);
 }
@@ -1505,4 +1507,46 @@ void CImageProcessDlg::OnSegmetationCanny()
 	Mat dst;
 	Canny(m_cur, dst, 150, 150);
 	ShowCurImage(dst);
+}
+
+
+void CImageProcessDlg::OnBinaryIterationmarkb()
+{
+	CBinary iBinary;
+	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+	{	
+		Mat dst;
+
+		string str = m_images[v_i].GetBuffer(0);
+		
+		int index1 = str.find_last_of("\\");
+		int index2 = str.find_last_of(".");
+		string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+		Mat src = imread(str, 0);
+		bitwise_not(src, src);
+
+		Mat mark;
+		iBinary.OTSU(src, mark);
+
+		int result = iBinary.Iteration(src, mark, dst);
+		for(int i = 0; i < dst.rows; ++i)
+		{
+			for(int j = 0; j < dst.cols; ++j)
+			{
+				if(!mark.at<uchar>(i, j))   dst.at<uchar>(i, j) = 0;
+				else dst.at<uchar>(i, j) = 255 - dst.at<uchar>(i, j);
+			}
+		}
+
+
+		if (result == 0)
+		{
+			std::stringstream ss(std::stringstream::in | std::stringstream::out);
+			ss << this->m_savepath << "\\" << name << ".bmp";
+			imwrite(ss.str(), dst);
+		}
+	}
+
+	MessageBox("Finish");
 }

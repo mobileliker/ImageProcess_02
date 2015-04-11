@@ -111,4 +111,5 @@ public:
 	afx_msg void OnBinaryOtsumarkb();
 	afx_msg void OnBinaryMaxentropy32869();
 	afx_msg void OnSegmetationCanny();
+	afx_msg void OnBinaryIterationmarkb();
 };
