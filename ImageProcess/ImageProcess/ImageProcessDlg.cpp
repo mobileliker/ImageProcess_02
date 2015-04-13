@@ -145,6 +145,8 @@ BEGIN_MESSAGE_MAP(CImageProcessDlg, CDialogEx)
 	ON_COMMAND(ID_SEGMETATION_CANNY, &CImageProcessDlg::OnSegmetationCanny)
 	ON_COMMAND(ID_BINARY_ITERATIONMARKB, &CImageProcessDlg::OnBinaryIterationmarkb)
 	ON_COMMAND(ID_BINARY_REMOVEMARK, &CImageProcessDlg::OnBinaryRemovemark)
+	ON_COMMAND(ID_BINARY_REMOVEMARKB, &CImageProcessDlg::OnBinaryRemovemarkb)
+	ON_COMMAND(ID_BLUR_MEDIANB, &CImageProcessDlg::OnBlurMedianb)
 END_MESSAGE_MAP()
 
 
@@ -751,11 +753,30 @@ void CImageProcessDlg::OnBlurGaussian()
 
 void CImageProcessDlg::OnBlurMedian()
 {
-	CBlur iblur;
+
+	CInputNumDlg dlg;
+	dlg.m_num = 3;
+
+	if(dlg.DoModal())
+	{
+		int n = dlg.m_num;
+
+		if(0 != n % 2)
+		{		
+			CBlur iblur;
+			iblur.setDebug(CBlur::DEBUG_OPEN);
+
 	
-	Mat m_blur;
-	iblur.iMedianBlur(m_cur, m_blur, 11);
-	ShowCurImage(m_blur);
+			Mat m_blur;
+			iblur.iMedianBlur(m_cur, m_blur, n);
+			ShowCurImage(m_blur);
+		}
+		else
+		{			
+			MessageBox("Input Num must Odd");
+		}
+	}
+
 
 }
 
@@ -1566,7 +1587,7 @@ void CImageProcessDlg::OnBinaryRemovemark()
 	int idx_y[] = {-1,-1,0,1,1,1,0,-1};
 	Mat mark2;
 	mark.copyTo(mark2);
-	for(int k = 0; k < 3; ++k)
+	for(int k = 0; k < 4; ++k)
 	{
 		for(int i = 1; i < mark.rows - 1; ++i)
 		{
@@ -1580,6 +1601,11 @@ void CImageProcessDlg::OnBinaryRemovemark()
 				}
 			}
 		}
+
+		//std::stringstream ss(std::stringstream::in | std::stringstream::out);
+		//ss << "tmp/debug_binary_remove_" << k << ".bmp";
+		//imwrite(ss.str(), mark2);
+
 		mark2.copyTo(mark);
 	}
 
@@ -1599,4 +1625,119 @@ void CImageProcessDlg::OnBinaryRemovemark()
 
 	ShowCurImage(dst);
 
+}
+
+
+void CImageProcessDlg::OnBinaryRemovemarkb()
+{	
+	CBinary iBinary;
+	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+	{	
+		Mat dst;
+
+		string str = m_images[v_i].GetBuffer(0);
+		
+		int index1 = str.find_last_of("\\");
+		int index2 = str.find_last_of(".");
+		string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+		Mat src = imread(str, 0);
+		bitwise_not(src, src);
+
+		Mat mark;
+		iBinary.OTSU(src, mark);
+
+		int idx_x[] = {0,1,1,1,0,-1,-1,-1};
+		int idx_y[] = {-1,-1,0,1,1,1,0,-1};
+		Mat mark2;
+		mark.copyTo(mark2);
+		for(int k = 0; k < 4; ++k)
+		{
+			for(int i = 1; i < mark.rows - 1; ++i)
+			{
+				for(int j = 1; j < mark.cols - 1; ++j)
+				{	
+					int p;
+					if(mark.at<uchar>(i, j))
+					{
+						for(p = 0; p < 8; ++p) if(!mark.at<uchar>(i + idx_y[p], j + idx_x[p])) break;
+						if(p < 8) mark2.at<uchar>(i, j) = 0;
+					}
+				}
+			}
+
+			//std::stringstream ss(std::stringstream::in | std::stringstream::out);
+			//ss << "tmp/debug_binary_remove_" << k << ".bmp";
+			//imwrite(ss.str(), mark2);
+
+			mark2.copyTo(mark);
+		}
+
+		int result = iBinary.MaxEntropy(src, mark, dst);
+		for(int i = 0; i < dst.rows; ++i)
+		{
+			for(int j = 0; j < dst.cols; ++j)
+			{
+				if(!mark.at<uchar>(i, j))   dst.at<uchar>(i, j) = 0;
+				else dst.at<uchar>(i, j) = 255 - dst.at<uchar>(i, j);
+			}
+		}
+
+
+		if (result == 0)
+		{
+			std::stringstream ss(std::stringstream::in | std::stringstream::out);
+			ss << this->m_savepath << "\\" << name << ".bmp";
+			imwrite(ss.str(), dst);
+		}
+	}
+
+	MessageBox("Finish");
+}
+
+
+void CImageProcessDlg::OnBlurMedianb()
+{	
+	CInputNumDlg dlg;
+	dlg.m_num = 3;
+
+	if(dlg.DoModal())
+	{
+		int n = dlg.m_num;
+
+		if(0 != n % 2)
+		{		
+			CBlur iblur;
+			iblur.setDebug(CBlur::DEBUG_OPEN);
+
+			for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+			{	
+				Mat dst;
+
+				string str = m_images[v_i].GetBuffer(0);
+		
+				int index1 = str.find_last_of("\\");
+				int index2 = str.find_last_of(".");
+				string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+				Mat src = imread(str, 0);
+				
+				int result = iblur.iMedianBlur(src, dst, n);
+			
+				if (result == 0)
+				{
+					std::stringstream ss(std::stringstream::in | std::stringstream::out);
+					ss << this->m_savepath << "\\" << name << ".bmp";
+					imwrite(ss.str(), dst);
+				}
+			}
+
+			MessageBox("Finish");
+
+		}
+		else
+		{			
+			MessageBox("Input Num must Odd");
+		}
+	}
 }
