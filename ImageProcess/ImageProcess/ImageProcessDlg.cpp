@@ -445,7 +445,7 @@ void CImageProcessDlg::OnChannelGrayb()
 		if (result == 0)
 		{
 			std::stringstream ss(std::stringstream::in | std::stringstream::out);
-			ss << this->m_savepath << "\\" << name << "_gray.jpg";
+			ss << this->m_savepath << "\\" << name << ".bmp";
 			imwrite(ss.str(), dst);
 		}
 	}
@@ -523,6 +523,8 @@ void CImageProcessDlg::OnBinaryMode()
 void CImageProcessDlg::OnBinaryModeb()
 {
 	CBinary binary;
+
+	double sum_time = 0;
 	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
 	{	
 		Mat dst;
@@ -536,16 +538,22 @@ void CImageProcessDlg::OnBinaryModeb()
 		Mat src = imread(str, 0);
 		
 		int result = binary.Mode(src, dst);
+		sum_time += binary.getTimeSpan();
 
 		if (result == 0)
 		{
 			std::stringstream ss(std::stringstream::in | std::stringstream::out);
-			ss << this->m_savepath << "\\" << name << "_gray.jpg";
+			ss << this->m_savepath << "\\" << name << ".bmp";
 			imwrite(ss.str(), dst);
 		}
 	}
 
-	MessageBox("Finish");
+	char str[200];
+	sprintf(str, "Average Use Time: %lf ms.", sum_time / m_images.size());
+	m_restext = str;
+	UpdateData(FALSE);
+
+	MessageBox(str);
 }
 
 
@@ -568,6 +576,8 @@ void CImageProcessDlg::OnBinaryOtsu()
 void CImageProcessDlg::OnBinaryOtsub()
 {
 	CBinary binary;
+	double sum_time = 0;
+
 	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
 	{	
 		Mat dst;
@@ -581,16 +591,22 @@ void CImageProcessDlg::OnBinaryOtsub()
 		Mat src = imread(str, 0);
 		
 		int result = binary.OTSU(src, dst);
+		sum_time += binary.getTimeSpan();
 
 		if (result == 0)
 		{
 			std::stringstream ss(std::stringstream::in | std::stringstream::out);
-			ss << this->m_savepath << "\\" << name << ".jpg";
+			ss << this->m_savepath << "\\" << name << ".bmp";
 			imwrite(ss.str(), dst);
 		}
 	}
 
-	MessageBox("Finish");
+	char str[200];
+	sprintf(str, "Average Use Time: %lf ms.", sum_time / m_images.size());
+	m_restext = str;
+	UpdateData(FALSE);
+
+	MessageBox(str);
 }
 
 
@@ -612,6 +628,8 @@ void CImageProcessDlg::OnBinaryMaxentropy()
 
 void CImageProcessDlg::OnBinaryMaxentropyb()
 {	
+	double sum_time = 0;
+
 	CBinary binary;
 	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
 	{	
@@ -626,7 +644,9 @@ void CImageProcessDlg::OnBinaryMaxentropyb()
 		Mat src = imread(str, 0);
 		
 		int result = binary.MaxEntropy(src, dst);
-
+	
+		sum_time += binary.getTimeSpan();
+		
 		if (result == 0)
 		{
 			std::stringstream ss(std::stringstream::in | std::stringstream::out);
@@ -634,8 +654,13 @@ void CImageProcessDlg::OnBinaryMaxentropyb()
 			imwrite(ss.str(), dst);
 		}
 	}
+		
+	char str[200];
+	sprintf(str, "Average Use Time: %lf ms.", sum_time / m_images.size());
+	m_restext = str;
+	UpdateData(FALSE);
 
-	MessageBox("Finish");
+	MessageBox(str);
 }
 
 
@@ -657,6 +682,8 @@ void CImageProcessDlg::OnBinaryIteration()
 
 void CImageProcessDlg::OnBinaryIterationb()
 {
+	double sum_time = 0;
+
 	CBinary binary;
 	for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
 	{	
@@ -671,6 +698,7 @@ void CImageProcessDlg::OnBinaryIterationb()
 		Mat src = imread(str, 0);
 
 		int result = binary.Iteration(src, dst);
+		sum_time += binary.getTimeSpan();
 
 		if (result == 0)
 		{
@@ -680,7 +708,12 @@ void CImageProcessDlg::OnBinaryIterationb()
 		}
 	}
 
-	MessageBox("Finish");
+	char str[200];
+	sprintf(str, "Average Use Time: %lf ms.", sum_time / m_images.size());
+	m_restext = str;
+	UpdateData(FALSE);
+
+	MessageBox(str);
 }
 
 void CImageProcessDlg::OnBinaryMannal()
