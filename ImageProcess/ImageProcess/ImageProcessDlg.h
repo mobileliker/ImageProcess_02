@@ -115,4 +115,5 @@ public:
 	afx_msg void OnBinaryRemovemark();
 	afx_msg void OnBinaryRemovemarkb();
 	afx_msg void OnBlurMedianb();
+	CString m_restext;
 };

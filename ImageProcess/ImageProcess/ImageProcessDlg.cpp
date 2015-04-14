@@ -65,6 +65,7 @@ CImageProcessDlg::CImageProcessDlg(CWnd* pParent /*=NULL*/)
 	m_res = _T("");
 	m_savepath = _T("");
 	m_openpath = _T("");
+	m_restext = _T("");
 }
 
 void CImageProcessDlg::DoDataExchange(CDataExchange* pDX)
@@ -73,6 +74,7 @@ void CImageProcessDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_RES, m_res);
 	DDX_Text(pDX, IDC_EDIT_SAVEPATH, m_savepath);
 	DDX_Text(pDX, IDC_EDIT_OPENPATH, m_openpath);
+	DDX_Text(pDX, IDC_RESTEXT, m_restext);
 }
 
 BEGIN_MESSAGE_MAP(CImageProcessDlg, CDialogEx)
@@ -508,6 +510,11 @@ void CImageProcessDlg::OnBinaryMode()
 
 	binary.Mode(m_cur, m_binary);
 
+	char str[200];
+	sprintf(str, "Use Time: %lf ms.", binary.getTimeSpan());
+	m_restext = str;
+	UpdateData(FALSE);
+
 	ShowCurImage(m_binary);
 }
 
@@ -548,6 +555,11 @@ void CImageProcessDlg::OnBinaryOtsu()
 	//binary.setDebug(CBinary::DEBUG_OPEN);
 
 	binary.OTSU(m_cur, m_binary);
+	
+	char str[200];
+	sprintf(str, "Use Time: %lf ms.", binary.getTimeSpan());
+	m_restext = str;
+	UpdateData(FALSE);
 
 	ShowCurImage(m_binary);
 }
@@ -589,6 +601,11 @@ void CImageProcessDlg::OnBinaryMaxentropy()
 
 	binary.MaxEntropy(m_cur, m_binary);
 
+	char str[200];
+	sprintf(str, "Use Time: %lf ms.", binary.getTimeSpan());
+	m_restext = str;
+	UpdateData(FALSE);
+
 	ShowCurImage(m_binary);
 }
 
@@ -629,6 +646,11 @@ void CImageProcessDlg::OnBinaryIteration()
 	binary.setDebug(CBinary::DEBUG_OPEN);
 
 	binary.Iteration(m_cur, m_binary);
+		
+	char str[200];
+	sprintf(str, "Use Time: %lf ms.", binary.getTimeSpan());
+	m_restext = str;
+	UpdateData(FALSE);
 
 	ShowCurImage(m_binary);
 }

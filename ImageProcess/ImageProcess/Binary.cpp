@@ -16,6 +16,8 @@ CBinary::~CBinary(void)
 
 int CBinary::Mode(Mat src, Mat &dst)
 {
+	DWORD start_time = GetTickCount();
+
 	int i,j;
 	int size = 10;
 
@@ -62,6 +64,9 @@ int CBinary::Mode(Mat src, Mat &dst)
 	}
 	
 	threshold(src, dst,idx_min, 255, CV_THRESH_BINARY);
+
+	DWORD end_time = GetTickCount();
+	m_timeSpan = end_time - start_time;
 
 	if(m_debug)
 	{
@@ -209,7 +214,13 @@ int CBinary::otsuThreshold(Mat src, Mat mark)
 
 int CBinary::OTSU(Mat src, Mat &dst)
 {
+	
+	DWORD start_time = GetTickCount();
+
 	threshold(src, dst, 170, 255, CV_THRESH_OTSU+CV_THRESH_BINARY);
+
+	DWORD end_time = GetTickCount();
+	m_timeSpan = end_time - start_time;
 
 	if(m_debug)
 	{
@@ -304,6 +315,9 @@ double caculateCurrentEntropy(int * arr_hist,int cur_threshold,entropy_state sta
 
 int CBinary::MaxEntropy(Mat src, Mat &dst)
 {
+
+	DWORD start_time = GetTickCount();
+
 	int HistogramBins = 256;
 	float HistogramRange1[2]={0,255};
 	float *HistogramRange[1]={&HistogramRange1[0]};
@@ -330,6 +344,10 @@ int CBinary::MaxEntropy(Mat src, Mat &dst)
 	threshold(src, dst, (double)max_index, 255, CV_THRESH_BINARY);
 	cvReleaseHist(&hist);
 
+	
+	DWORD end_time = GetTickCount();
+	m_timeSpan = end_time - start_time;
+
 	if(m_debug)
 	{
 		std::stringstream ss(std::stringstream::in | std::stringstream::out);
@@ -342,6 +360,9 @@ int CBinary::MaxEntropy(Mat src, Mat &dst)
 
 int CBinary::MaxEntropy(Mat src, Mat mark, Mat &dst)
 {	
+	
+	DWORD start_time = GetTickCount();
+
 	int HistogramBins = 256;
 	float HistogramRange1[2]={0,255};
 	float *HistogramRange[1]={&HistogramRange1[0]};
@@ -379,6 +400,9 @@ int CBinary::MaxEntropy(Mat src, Mat mark, Mat &dst)
 	
 	//cvReleaseHist(&hist);
 	delete [] arr_hist;
+	
+	DWORD end_time = GetTickCount();
+	m_timeSpan = end_time - start_time;
 
 	if(m_debug)
 	{
@@ -532,12 +556,17 @@ int DetectThreshold(IplImage*img, IplImage *mark, int nMaxIter, int& iDiffRec) /
 }
 
 int CBinary::Iteration(Mat src, Mat& dst, const int nMaxIter)
-{
+{	
+	DWORD start_time = GetTickCount();
+
 	IplImage i_src = src;
 	int iDiffRec;
 	int iter_threshold = DetectThreshold(&i_src,nMaxIter,iDiffRec);
 
 	threshold(src, dst, iter_threshold, 255, CV_THRESH_BINARY);
+	
+	DWORD end_time = GetTickCount();
+	m_timeSpan = end_time - start_time;
 
 	if(m_debug)
 	{

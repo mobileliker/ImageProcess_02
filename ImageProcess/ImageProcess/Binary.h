@@ -9,6 +9,7 @@ public:
 	~CBinary(void);
 
 	inline void setDebug(int _debug){m_debug = _debug;}
+	inline double getTimeSpan() {return m_timeSpan;}
 
 	static const int DEFAULT_DEBUG = 0;
 	static const int DEBUG_OPEN = 1;
@@ -19,6 +20,8 @@ protected:
 	
 	//! 是否开启调试模式，0关闭，非0开启
 	int m_debug;
+	double m_timeSpan;
+
 public:
 	int Mode(Mat, Mat&);
 	int OTSU(Mat, Mat&);

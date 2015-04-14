@@ -674,7 +674,7 @@ int CThinning::Hilditch2(Mat src, Mat &dst)
 	if(m_debug)
 	{
 		std::stringstream ss(std::stringstream::in | std::stringstream::out);
-		ss << "tmp/debug_thinning_zhang.bmp";
+		ss << "tmp/debug_thinning_hilditch2.bmp";
 		imwrite(ss.str(), dst);
 	}
 
