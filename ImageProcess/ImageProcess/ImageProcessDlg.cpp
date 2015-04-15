@@ -149,6 +149,9 @@ BEGIN_MESSAGE_MAP(CImageProcessDlg, CDialogEx)
 	ON_COMMAND(ID_BINARY_REMOVEMARK, &CImageProcessDlg::OnBinaryRemovemark)
 	ON_COMMAND(ID_BINARY_REMOVEMARKB, &CImageProcessDlg::OnBinaryRemovemarkb)
 	ON_COMMAND(ID_BLUR_MEDIANB, &CImageProcessDlg::OnBlurMedianb)
+	ON_COMMAND(ID_RESIZE_SCALE, &CImageProcessDlg::OnResizeScale)
+	ON_COMMAND(ID_RESIZE_SCALEB, &CImageProcessDlg::OnResizeScaleb)
+	ON_COMMAND(ID_TEST_TESTAUTO, &CImageProcessDlg::OnTestTestauto)
 END_MESSAGE_MAP()
 
 
@@ -1311,7 +1314,7 @@ void CImageProcessDlg::OnCompleteCompleteisolatepoint()
 {
 	CComplete iComplete;
 	Mat dst;
-	m_endPoints = iComplete.CompeleteIsolatePoint(m_cur, m_isolatePoints, dst);
+	m_endPoints = iComplete.CompeleteIsolatePoint2(m_cur, m_isolatePoints, dst);
 	ShowCurImage(dst);
 }
 
@@ -1795,4 +1798,88 @@ void CImageProcessDlg::OnBlurMedianb()
 			MessageBox("Input Num must Odd");
 		}
 	}
+}
+
+
+void CImageProcessDlg::OnResizeScale()
+{
+	CInputNumDlg dlg;
+	dlg.m_num = 50;
+	if(dlg.DoModal())
+	{
+		Mat dst;
+		double dscale= 1.0 * dlg.m_num / 100;
+		Size dsize = Size(m_cur.cols * dscale, m_cur.rows * dscale);
+		resize(m_cur, dst, dsize);
+		
+		ShowCurImage(dst);
+
+	}
+}
+
+
+void CImageProcessDlg::OnResizeScaleb()
+{
+		
+	CInputNumDlg dlg;
+	dlg.m_num = 50;
+	if(dlg.DoModal())
+	{
+		double dscale= 1.0 * dlg.m_num / 100;
+		Size dsize = Size(m_cur.cols * dscale, m_cur.rows * dscale);
+
+		for(vector<CString>::size_type v_i = 0; v_i < m_images.size(); ++v_i)
+		{	
+			Mat dst;
+
+			string str = m_images[v_i].GetBuffer(0);
+		
+			int index1 = str.find_last_of("\\");
+			int index2 = str.find_last_of(".");
+			string name = str.substr(index1 + 1,index2 - index1 - 1);
+
+			Mat src = imread(str, 0);
+
+			resize(m_cur, dst, dsize);
+		
+			std::stringstream ss(std::stringstream::in | std::stringstream::out);
+			ss << this->m_savepath << "\\" << name << ".bmp";
+			imwrite(ss.str(), dst);
+		}
+
+		MessageBox("Finish");
+
+	}
+}
+
+
+void CImageProcessDlg::OnTestTestauto()
+{
+	Size dsize(100, 100);
+	Mat dst(100, 100, CV_8UC(1));
+	for(int i = 0; i < dst.rows; ++i)
+	{
+		for(int j = 0; j < dst.cols; ++j)
+		{
+			dst.at<uchar>(i, j) = 0;
+		}
+	}
+	
+	dst.at<uchar>(10,15) = 255;
+	dst.at<uchar>(11,15) = 255;
+	dst.at<uchar>(12,16) = 255;
+	dst.at<uchar>(13,15) = 255;
+	dst.at<uchar>(14,14) = 255;
+	dst.at<uchar>(15,15) = 255;
+
+	CComplete iComplete;
+	iComplete.setDebug(CComplete::DEBUG_OPEN);
+
+	Point point;
+	point.x = 15;
+	point.y = 15;
+
+	double value;
+	int result = iComplete.Slope(dst, point, value);
+	ShowCurImage(dst);
 }

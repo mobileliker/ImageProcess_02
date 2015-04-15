@@ -116,4 +116,7 @@ public:
 	afx_msg void OnBinaryRemovemarkb();
 	afx_msg void OnBlurMedianb();
 	CString m_restext;
+	afx_msg void OnResizeScale();
+	afx_msg void OnResizeScaleb();
+	afx_msg void OnTestTestauto();
 };

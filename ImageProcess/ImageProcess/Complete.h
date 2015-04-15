@@ -16,9 +16,9 @@ public:
 	static const int DEBUG_OPEN = 1;
 	static const int DEBUG_CLOSE = 0;
 
-	static const int DEFAULT_ISOLATEALPHA = 25;
+	static const int DEFAULT_ISOLATEALPHA = 100;
 	
-	static const int DEFAULT_ENDPOINTALPHA = 5;
+	static const int DEFAULT_ENDPOINTALPHA = 500;
 
 protected:
 	
@@ -31,7 +31,11 @@ public:
 	Vector<Point> FindEndPoint(Mat);
 	Vector<Point> FindIsolatePoint(Mat);
 	int CompeleteIsolatePoint(Mat, Vector<Point>, Mat&);
+	int CompeleteIsolatePoint2(Mat, Vector<Point>, Mat&);
 	int CompeleteEndPoint(Mat, Vector<Point>, Mat&);
+	int CompeleteEndPoint2(Mat, Vector<Point>, Mat&);
+
+	int Slope(Mat, Point, double&);
 
 };
 
