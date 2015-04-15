@@ -2,6 +2,7 @@
 #include "Complete.h"
 #include <fstream>
 
+#include <queue>
 
 CComplete::CComplete(void): m_debug(DEFAULT_DEBUG), m_isolateAlpha(DEFAULT_ISOLATEALPHA) , m_endpointAlpha(DEFAULT_ENDPOINTALPHA)
 {
@@ -12,12 +13,12 @@ CComplete::~CComplete(void)
 {
 }
 
-Vector<Point> CComplete::FindIsolatePoint(Mat src)
+vector<Point> CComplete::FindIsolatePoint(Mat src)
 {
 	int i, j, k;
 	int idx_x[] = {0,1,1,1,0,-1,-1,-1};
 	int idx_y[] = {-1,-1,0,1,1,1,0,-1};
-	Vector<Point> isolatePoints;
+	vector<Point> isolatePoints;
 	
 	bitwise_not(src, src);
 
@@ -45,7 +46,7 @@ Vector<Point> CComplete::FindIsolatePoint(Mat src)
 	if(m_debug)
 	{		
 		std::ofstream outfile("tmp/debug_isolatepoint.txt");
-		for(Vector<Point>::iterator it = isolatePoints.begin(); it != isolatePoints.end(); ++it)
+		for(vector<Point>::iterator it = isolatePoints.begin(); it != isolatePoints.end(); ++it)
 		{
 			outfile << "(" << it->x << " , " << it->y << ")" << std::endl;
 		}
@@ -54,7 +55,7 @@ Vector<Point> CComplete::FindIsolatePoint(Mat src)
 
 		Mat dst;
 		src.copyTo(dst);
-		for(Vector<Point>::iterator it = isolatePoints.begin(); it != isolatePoints.end(); ++it)
+		for(vector<Point>::iterator it = isolatePoints.begin(); it != isolatePoints.end(); ++it)
 		{
 			dst.at<uchar>(it->y, it->x) = 128;
 			//for(k = 0; k < 8; ++k) dst.at<uchar>(it->y + idx_y[k], it->x + idx_x[k]) = 128;
@@ -69,11 +70,11 @@ Vector<Point> CComplete::FindIsolatePoint(Mat src)
 	return isolatePoints;
 }
 
-Vector<Point> CComplete::FindEndPoint(Mat src)
+vector<Point> CComplete::FindEndPoint(Mat src)
 {	int i, j, k;
 	int idx_x[] = {0,1,1,1,0,-1,-1,-1};
 	int idx_y[] = {-1,-1,0,1,1,1,0,-1};
-	Vector<Point> endPoints;
+	vector<Point> endPoints;
 	
 	bitwise_not(src, src);
 
@@ -102,7 +103,7 @@ Vector<Point> CComplete::FindEndPoint(Mat src)
 	{
 		Mat dst;
 		src.copyTo(dst);
-		for(Vector<Point>::iterator it = endPoints.begin(); it != endPoints.end(); ++it)
+		for(vector<Point>::iterator it = endPoints.begin(); it != endPoints.end(); ++it)
 		{
 			dst.at<uchar>(it->y, it->x) = 128;
 			//for(k = 0; k < 8; ++k) dst.at<uchar>(it->y + idx_y[k], it->x + idx_x[k]) = 128;
@@ -116,7 +117,7 @@ Vector<Point> CComplete::FindEndPoint(Mat src)
 	return endPoints;
 }
 
-int CComplete::CompeleteIsolatePoint(Mat src, Vector<Point> points, Mat& dst)
+int CComplete::CompeleteIsolatePoint(Mat src, vector<Point> points, Mat& dst)
 {
 	int alpha;
 	src.copyTo(dst);
@@ -129,7 +130,7 @@ int CComplete::CompeleteIsolatePoint(Mat src, Vector<Point> points, Mat& dst)
 	int idx_dy[] = {0, 1, 0, -1};
 
 	int x, y;
-	for(Vector<Point>::iterator it = points.begin(); it != points.end(); ++it)
+	for(vector<Point>::iterator it = points.begin(); it != points.end(); ++it)
 	{
 		for(alpha = 1; alpha <= m_isolateAlpha; ++alpha)
 		{
@@ -166,9 +167,14 @@ double Distance(Point p1, Point p2)
 	return std::sqrt(1.0 * (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
 }
 
+double Distance2(Point p1, Point p2)
+{
+	return 1.0 * (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y);
+}
 
 
-int CComplete::CompeleteIsolatePoint2(Mat src, Vector<Point> points, Mat& dst)
+
+int CComplete::CompeleteIsolatePoint2(Mat src, vector<Point> points, Mat& dst)
 {
 
 	int alpha;
@@ -182,9 +188,9 @@ int CComplete::CompeleteIsolatePoint2(Mat src, Vector<Point> points, Mat& dst)
 	int idx_dx[] = {0, 1, 0, -1};
 
 	int x, y;
-	for(Vector<Point>::iterator it = points.begin(); it != points.end(); ++it)
+	for(vector<Point>::iterator it = points.begin(); it != points.end(); ++it)
 	{
-		Vector<Point> dpoints;
+		vector<Point> dpoints;
 		for(alpha = 1; alpha <= m_isolateAlpha; ++alpha)
 		{
 			for(int k = 0; k < 4; ++k)
@@ -214,7 +220,7 @@ int CComplete::CompeleteIsolatePoint2(Mat src, Vector<Point> points, Mat& dst)
 		{
 
 			std::ofstream outfile("tmp/debug_complete_process_findpoint.txt");
-			for(Vector<Point>::iterator dit = dpoints.begin(); dit != dpoints.end(); ++dit)
+			for(vector<Point>::iterator dit = dpoints.begin(); dit != dpoints.end(); ++dit)
 			{
 				outfile << "(" << dit->x << " , " << dit->y << ")" << std::endl;
 			}
@@ -223,7 +229,7 @@ int CComplete::CompeleteIsolatePoint2(Mat src, Vector<Point> points, Mat& dst)
 
 			double min_d = dst.cols + dst.rows;
 			Point min_p;
-			for(Vector<Point>::iterator dit = dpoints.begin(); dit != dpoints.end(); ++dit)
+			for(vector<Point>::iterator dit = dpoints.begin(); dit != dpoints.end(); ++dit)
 			{
 				double dis = Distance(*it, *dit);
 				if(dis < min_d)
@@ -246,7 +252,7 @@ return -2 斜率为无穷
 return -3 斜率为0
 return 0 正常
 */
-int CComplete::Slope(Mat src, Point point, double &value)
+int CComplete::Slope(Mat src, Point point, Point &dpoint)
 {
 	int idx_x[] = {0,1,1,1,0,-1,-1,-1};
 	int idx_y[] = {-1,-1,0,1,1,1,0,-1};
@@ -305,19 +311,59 @@ int CComplete::Slope(Mat src, Point point, double &value)
 		else if(avg_y == point.y * 1.0) return -3;
 		else
 		{
-			value = 1.0 * (avg_y - point.y) / (avg_x - point.x);
+			dpoint.x = (int)avg_x;
+			dpoint.y = (int)avg_y;
 			return 0;
 		}
 	}
 
 }
 
+Mat CComplete::FindVein(Mat src, Point point)
+{
+	int idx_x[] = {0,1,1,1,0,-1,-1,-1};
+	int idx_y[] = {-1,-1,0,1,1,1,0,-1};
 
-int CComplete::CompeleteEndPoint(Mat src, Vector<Point> points, Mat& dst)
+	std::queue<Point> q_point;
+	q_point.push(point);
+	vector<Point> dpoints;
+
+	Mat dst = Mat::zeros(src.rows, src.cols, CV_8U);
+
+	while(!q_point.empty())
+	{
+		Point p = q_point.front();
+		q_point.pop();
+
+		for(int k = 0; k < 8; ++k)
+		{
+			int sx = p.x + idx_x[k];
+			int sy = p.y + idx_y[k];
+
+			if(src.at<uchar>(sy, sx) != 0 && dst.at<uchar>(sy, sx) == 0)
+			{
+				Point p2;
+				p2.x = sx;
+				p2.y = sy;
+
+				q_point.push(p2);
+
+				dst.at<uchar>(sy, sx) = 255;
+			}
+		}
+
+	}
+
+	return dst;
+
+}
+
+int CComplete::CompeleteEndPoint(Mat src, vector<Point> points, Mat& dst)
 {
 	src.copyTo(dst);
 
 	bitwise_not(dst, dst);
+
 
 	int idx_x[] = {0,1,1,1,0,-1,-1,-1};
 	int idx_y[] = {-1,-1,0,1,1,1,0,-1};
@@ -325,7 +371,7 @@ int CComplete::CompeleteEndPoint(Mat src, Vector<Point> points, Mat& dst)
 	int x, y;
 
 	vector< vector<Point>> vv_slopepoints;
-	for(Vector<Point>::iterator it = points.begin(); it != points.end(); ++it)
+	for(vector<Point>::iterator it = points.begin(); it != points.end(); ++it)
 	{
 		x = it->x;
 		y = it->y;
@@ -391,19 +437,104 @@ int CComplete::CompeleteEndPoint(Mat src, Vector<Point> points, Mat& dst)
 }
 
 
-
-int CComplete::CompeleteEndPoint2(Mat src, Vector<Point> points, Mat& dst)
+double  CComplete::Cosine(Point p1, Point p2, Point p3)
 {
+	double a2 = Distance2(p1, p3);
+	double b2 = Distance2(p1, p2);
+	double c2 = Distance2(p2, p3);
+
+	double res = (b2 + c2 - a2) / (2 * std::sqrt(b2) * std::sqrt(c2));
+
+	return res;
+}
+
+
+int CComplete::CompeleteEndPoint2(Mat src, vector<Point> points, Mat& dst)
+{
+	int alpha;
+
+	int idx_sy[] = {1, -1, -1, 1};
+	int idx_sx[] = {-1, -1, 1, 1};
+	int idx_dy[] = {-1, 0, 1, 0};
+	int idx_dx[] = {0, 1, 0, -1};
+
 	src.copyTo(dst);
 
 	bitwise_not(dst, dst);
 
-	for(Vector<Point>::iterator it = points.begin(); it != points.end(); ++it)
+	for(vector<Point>::iterator it = points.begin(); it != points.end(); ++it)
 	{
-		int value;
-		int result = Slope(dst, *it, value);
+		Point dpoint;
+		int result = Slope(dst, *it, dpoint);
+
+		Mat mark = FindVein(dst, *it);
+
+		
+		vector<Point> dpoints;
+		for(alpha = 1; alpha <= m_endpointAlpha; ++alpha)
+		{
+			for(int k = 0; k < 4; ++k)
+			{
+				for(int d = 0; d < alpha * 2; ++d)
+				{
+					int sx = it->x + idx_sx[k] * alpha + idx_dx[k] * d;
+					int sy = it->y + idx_sy[k] * alpha + idx_dy[k] * d;
+					if(sx < 0 || sx >= dst.cols || sy < 0 || sy >= dst.rows) continue;
+					if(dst.at<uchar>(sy, sx) != 0)
+					{
+						Point point2;
+						point2.x = sx;
+						point2.y = sy;
+						dpoints.push_back(point2);
+						//line(dst, *it, point2, Scalar(255), 1, 8);
+						//goto end;
+					}
+				}
+			}
+			
+		}
+//end:
+		if(0 == dpoints.size()) 
+			dst.at<uchar>(it->y, it->x) = 0;
+		else
+		{
+
+			/*std::ofstream outfile("tmp/debug_complete_process_findpoint.txt");
+			for(vector<Point>::iterator dit = dpoints.begin(); dit != dpoints.end(); ++dit)
+			{
+				outfile << "(" << dit->x << " , " << dit->y << ")" << std::endl;
+			}
+			outfile.close();*/
 
 
+			double max_ang = - 1.0 / std::sqrt(2.0);
+			Point min_p;
+			for(vector<Point>::iterator dit = dpoints.begin(); dit != dpoints.end(); ++dit)
+			{
+				if(mark.at<uchar>(dit->y, dit->x) != 0) continue;
+
+				/*double dis = Distance(*it, *dit);
+				if(dis < min_d)
+				{
+					min_d = dis;
+					min_p = *dit;
+				}*/
+
+				double ang = Cosine(dpoint, *it, *dit);
+
+				if(ang < max_ang)
+				{
+					max_ang = ang;
+					min_p = *dit;
+				}
+
+
+			}
+			if(max_ang != - 1.0 / std::sqrt(2.0))
+			{
+				line(dst, *it, min_p, Scalar(255), 1, 8);
+			}
+		}
 	}
 
 	return 0;

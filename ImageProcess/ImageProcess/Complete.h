@@ -18,7 +18,7 @@ public:
 
 	static const int DEFAULT_ISOLATEALPHA = 100;
 	
-	static const int DEFAULT_ENDPOINTALPHA = 500;
+	static const int DEFAULT_ENDPOINTALPHA = 100;
 
 protected:
 	
@@ -28,14 +28,15 @@ protected:
 	int m_endpointAlpha;
 
 public:
-	Vector<Point> FindEndPoint(Mat);
-	Vector<Point> FindIsolatePoint(Mat);
-	int CompeleteIsolatePoint(Mat, Vector<Point>, Mat&);
-	int CompeleteIsolatePoint2(Mat, Vector<Point>, Mat&);
-	int CompeleteEndPoint(Mat, Vector<Point>, Mat&);
-	int CompeleteEndPoint2(Mat, Vector<Point>, Mat&);
+	vector<Point> FindEndPoint(Mat);
+	vector<Point> FindIsolatePoint(Mat);
+	int CompeleteIsolatePoint(Mat, vector<Point>, Mat&);
+	int CompeleteIsolatePoint2(Mat, vector<Point>, Mat&);
+	int CompeleteEndPoint(Mat, vector<Point>, Mat&);
+	int CompeleteEndPoint2(Mat, vector<Point>, Mat&);
 
-	int Slope(Mat, Point, double&);
-
+	int Slope(Mat, Point, Point&);
+	Mat FindVein(Mat, Point);
+	double Cosine(Point, Point, Point);
 };
 

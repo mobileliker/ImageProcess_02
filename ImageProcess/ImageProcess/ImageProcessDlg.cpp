@@ -1314,7 +1314,7 @@ void CImageProcessDlg::OnCompleteCompleteisolatepoint()
 {
 	CComplete iComplete;
 	Mat dst;
-	m_endPoints = iComplete.CompeleteIsolatePoint2(m_cur, m_isolatePoints, dst);
+	iComplete.CompeleteIsolatePoint2(m_cur, m_isolatePoints, dst);
 	ShowCurImage(dst);
 }
 
@@ -1324,7 +1324,7 @@ void CImageProcessDlg::OnCompleteCompleteendpoint()
 	CComplete iComplete;
 	iComplete.setDebug(CComplete::DEBUG_OPEN);
 	Mat dst;
-	m_endPoints = iComplete.CompeleteEndPoint(m_cur, m_endPoints, dst);
+	iComplete.CompeleteEndPoint2(m_cur, m_endPoints, dst);
 	ShowCurImage(dst);
 }
 
@@ -1855,7 +1855,7 @@ void CImageProcessDlg::OnResizeScaleb()
 
 void CImageProcessDlg::OnTestTestauto()
 {
-	Size dsize(100, 100);
+	/*Size dsize(100, 100);
 	Mat dst(100, 100, CV_8UC(1));
 	for(int i = 0; i < dst.rows; ++i)
 	{
@@ -1864,6 +1864,7 @@ void CImageProcessDlg::OnTestTestauto()
 			dst.at<uchar>(i, j) = 0;
 		}
 	}
+
 	
 	dst.at<uchar>(10,15) = 255;
 	dst.at<uchar>(11,15) = 255;
@@ -1872,6 +1873,13 @@ void CImageProcessDlg::OnTestTestauto()
 	dst.at<uchar>(14,14) = 255;
 	dst.at<uchar>(15,15) = 255;
 
+	dst.at<uchar>(12,15) = 255;
+	dst.at<uchar>(12,17) = 255;
+	dst.at<uchar>(12,18) = 255;
+	dst.at<uchar>(12,19) = 255;
+	dst.at<uchar>(12,20) = 255;
+	dst.at<uchar>(12,21) = 255;
+
 	CComplete iComplete;
 	iComplete.setDebug(CComplete::DEBUG_OPEN);
 
@@ -1879,7 +1887,27 @@ void CImageProcessDlg::OnTestTestauto()
 	point.x = 15;
 	point.y = 15;
 
-	double value;
-	int result = iComplete.Slope(dst, point, value);
-	ShowCurImage(dst);
+	Point dpoint;
+	//int result = iComplete.Slope(dst, point, dpoint);
+	Mat out = iComplete.FindVein(dst, point);
+	ShowCurImage(dst);*/
+
+
+	Point p1;
+	p1.x = 0;
+	p1.y = 0;
+
+	Point p2;
+	p2.x = 2;
+	p2.y = 0;
+
+	Point p3;
+	p3.x = 4;
+	p3.y = 2;
+
+	CComplete iComplete;
+	iComplete.setDebug(CComplete::DEBUG_OPEN);
+
+	double res = iComplete.Cosine(p1, p2, p3);
+	 ;
 }

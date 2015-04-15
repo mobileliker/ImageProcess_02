@@ -41,8 +41,8 @@ public:
 	Mat m_cur;
 	Mat m_channel;
 	Mat m_binary;
-	Vector<Point> m_endPoints;
-	Vector<Point> m_isolatePoints;
+	vector<Point> m_endPoints;
+	vector<Point> m_isolatePoints;
 
 	afx_msg void OnChannelGary();
 	afx_msg void OnHistogramShow();

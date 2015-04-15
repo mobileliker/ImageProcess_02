@@ -1,4 +1,4 @@
-﻿生成启动时间为 4/15/2015 5:09:46 PM。
+﻿生成启动时间为 4/15/2015 9:23:23 PM。
      1>项目“D:\Data\Code\ImageProcess_02\ImageProcess\ImageProcess\ImageProcess.vcxproj”在节点 2 上(build 个目标)。
      1>InitializeBuildStatus:
          正在创建“Debug\ImageProcess.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
@@ -62,4 +62,4 @@
 
 生成成功。
 
-已用时间 00:00:04.69
+已用时间 00:00:03.50
