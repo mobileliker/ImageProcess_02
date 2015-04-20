@@ -152,6 +152,9 @@ BEGIN_MESSAGE_MAP(CImageProcessDlg, CDialogEx)
 	ON_COMMAND(ID_RESIZE_SCALE, &CImageProcessDlg::OnResizeScale)
 	ON_COMMAND(ID_RESIZE_SCALEB, &CImageProcessDlg::OnResizeScaleb)
 	ON_COMMAND(ID_TEST_TESTAUTO, &CImageProcessDlg::OnTestTestauto)
+	ON_COMMAND(ID_IMAGE_TESTAUTO, &CImageProcessDlg::OnImageTestauto)
+	ON_COMMAND(ID_CHANNEL_AUTO, &CImageProcessDlg::OnChannelAuto)
+	ON_COMMAND(ID_BLUR_AUTO, &CImageProcessDlg::OnBlurAuto)
 END_MESSAGE_MAP()
 
 
@@ -1295,7 +1298,7 @@ void CImageProcessDlg::OnCompleteFindisolatepoint()
 	CComplete iComplete;
 	iComplete.setDebug(CComplete::DEBUG_OPEN);
 	m_isolatePoints = iComplete.FindIsolatePoint(m_cur);
-	MessageBox("Finish");
+	//MessageBox("Finish");
 }
 
 
@@ -1304,7 +1307,7 @@ void CImageProcessDlg::OnCompleteFindendpoint()
 	CComplete iComplete;
 	iComplete.setDebug(CComplete::DEBUG_OPEN);
 	m_endPoints = iComplete.FindEndPoint(m_cur);
-	MessageBox("Finish");
+	//MessageBox("Finish");
 }
 
 
@@ -1910,4 +1913,64 @@ void CImageProcessDlg::OnTestTestauto()
 
 	double res = iComplete.Cosine(p1, p2, p3);
 	 ;
+}
+
+
+void CImageProcessDlg::OnImageTestauto()
+{
+	//Channel
+	OnChannelAuto();
+
+	//Not
+	OnResizeNot();
+
+	//binary
+	OnBinaryRemovemark();
+
+	//Not
+	OnResizeNot();
+
+	//midian
+	OnBlurAuto();
+
+	//Thinning
+	OnThinningZhang();
+
+	//Find Isolate Point
+	OnCompleteFindisolatepoint();
+
+	//Complete Isolate Point
+	OnCompleteCompleteisolatepoint();
+
+	//Find End Point
+	OnCompleteFindendpoint();
+
+	//Complete Find Point
+	OnCompleteCompleteendpoint();
+
+}
+
+
+void CImageProcessDlg::OnChannelAuto()
+{
+	CChannel ichannel;
+	ichannel.setDebug(CChannel::DEBUG_OPEN);
+	Mat dst;
+	ichannel.iHSV(m_cur, dst, 2);	
+	ShowCurImage(dst);
+}
+
+
+void CImageProcessDlg::OnBlurAuto()
+{
+	
+
+		int n = 9;
+
+		CBlur iblur;
+		iblur.setDebug(CBlur::DEBUG_OPEN);
+		
+		Mat m_blur;
+		iblur.iMedianBlur(m_cur, m_blur, n);
+		ShowCurImage(m_blur);
 }

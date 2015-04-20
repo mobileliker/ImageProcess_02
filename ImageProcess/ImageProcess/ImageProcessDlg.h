@@ -119,4 +119,7 @@ public:
 	afx_msg void OnResizeScale();
 	afx_msg void OnResizeScaleb();
 	afx_msg void OnTestTestauto();
+	afx_msg void OnImageTestauto();
+	afx_msg void OnChannelAuto();
+	afx_msg void OnBlurAuto();
 };

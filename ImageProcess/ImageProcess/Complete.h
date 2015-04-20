@@ -16,15 +16,18 @@ public:
 	static const int DEBUG_OPEN = 1;
 	static const int DEBUG_CLOSE = 0;
 
-	static const int DEFAULT_ISOLATEALPHA = 100;
+	static const int DEFAULT_ISOLATEALPHA = 25;
+	static const int DEFAULT_ISOLATEBETA = 50;
 	
-	static const int DEFAULT_ENDPOINTALPHA = 100;
+	static const int DEFAULT_ENDPOINTALPHA = 25;
+
 
 protected:
 	
 	//! 是否开启调试模式，0关闭，非0开启
 	int m_debug;
 	int m_isolateAlpha;
+	int m_isolateBeta;
 	int m_endpointAlpha;
 
 public:

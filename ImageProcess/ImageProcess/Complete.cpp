@@ -4,7 +4,7 @@
 
 #include <queue>
 
-CComplete::CComplete(void): m_debug(DEFAULT_DEBUG), m_isolateAlpha(DEFAULT_ISOLATEALPHA) , m_endpointAlpha(DEFAULT_ENDPOINTALPHA)
+CComplete::CComplete(void): m_debug(DEFAULT_DEBUG), m_isolateAlpha(DEFAULT_ISOLATEALPHA) , m_isolateBeta(DEFAULT_ISOLATEBETA), m_endpointAlpha(DEFAULT_ENDPOINTALPHA)
 {
 }
 
@@ -238,7 +238,10 @@ int CComplete::CompeleteIsolatePoint2(Mat src, vector<Point> points, Mat& dst)
 					min_p = *dit;
 				}
 			}
-			line(dst, *it, min_p, Scalar(255), 1, 8);
+			if(min_d != dst.cols + dst.rows)
+			{
+				line(dst, *it, min_p, Scalar(255), 1, 8);
+			}
 		}
 	}
 
@@ -506,8 +509,9 @@ int CComplete::CompeleteEndPoint2(Mat src, vector<Point> points, Mat& dst)
 			}
 			outfile.close();*/
 
-
-			double max_ang = - 1.0 / std::sqrt(2.0);
+			//double beta =  -0.927;
+			double beta = - 1.0 / std::sqrt(2.0);
+			double max_ang = beta;
 			Point min_p;
 			for(vector<Point>::iterator dit = dpoints.begin(); dit != dpoints.end(); ++dit)
 			{
@@ -530,12 +534,14 @@ int CComplete::CompeleteEndPoint2(Mat src, vector<Point> points, Mat& dst)
 
 
 			}
-			if(max_ang != - 1.0 / std::sqrt(2.0))
+			if(max_ang != beta)
 			{
-				line(dst, *it, min_p, Scalar(255), 1, 8);
+				line(dst, *it, min_p, Scalar(255), 5, 8);
 			}
 		}
 	}
+	
+	bitwise_not(dst, dst);
 
 	return 0;
 }
