@@ -1640,6 +1640,8 @@ void CImageProcessDlg::OnBinaryRemovemark()
 	CBinary ibinary;
 	ibinary.setDebug(CBinary::DEBUG_OPEN);
 
+	DWORD start_time = GetTickCount();
+
 	Mat mark;
 	Mat dst;
 	ibinary.OTSU(m_cur, mark);
@@ -1682,7 +1684,9 @@ void CImageProcessDlg::OnBinaryRemovemark()
 		}
 	}
 
-
+	
+	DWORD end_time = GetTickCount();
+	double m_timeSpan = end_time - start_time;
 
 	ShowCurImage(dst);
 
@@ -1743,7 +1747,7 @@ void CImageProcessDlg::OnBinaryRemovemarkb()
 				else dst.at<uchar>(i, j) = 255 - dst.at<uchar>(i, j);
 			}
 		}
-
+		
 
 		if (result == 0)
 		{
