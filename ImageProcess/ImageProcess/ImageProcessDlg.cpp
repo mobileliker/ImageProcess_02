@@ -1845,7 +1845,7 @@ void CImageProcessDlg::OnResizeScaleb()
 			int index2 = str.find_last_of(".");
 			string name = str.substr(index1 + 1,index2 - index1 - 1);
 
-			Mat src = imread(str, 0);
+			Mat src = imread(str, 1);
 
 			resize(m_cur, dst, dsize);
 		
