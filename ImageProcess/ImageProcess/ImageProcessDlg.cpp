@@ -1650,6 +1650,11 @@ void CImageProcessDlg::OnBinaryRemovemark()
 	int idx_y[] = {-1,-1,0,1,1,1,0,-1};
 	Mat mark2;
 	mark.copyTo(mark2);
+	
+	Mat outmark;
+	mark.copyTo(outmark);
+	outmark.setTo(255);
+	
 	for(int k = 0; k < 4; ++k)
 	{
 		for(int i = 1; i < mark.rows - 1; ++i)
@@ -1660,14 +1665,18 @@ void CImageProcessDlg::OnBinaryRemovemark()
 				if(mark.at<uchar>(i, j))
 				{
 					for(p = 0; p < 8; ++p) if(!mark.at<uchar>(i + idx_y[p], j + idx_x[p])) break;
-					if(p < 8) mark2.at<uchar>(i, j) = 0;
+					if(p < 8) {mark2.at<uchar>(i, j) = 0;outmark.at<uchar>(i, j) = 128;}
 				}
 			}
 		}
+		
+		std::stringstream ss(std::stringstream::in | std::stringstream::out);
+		ss << "tmp/debug_binary_remove_" << k << ".bmp";
+		imwrite(ss.str(), mark2);
 
-		//std::stringstream ss(std::stringstream::in | std::stringstream::out);
-		//ss << "tmp/debug_binary_remove_" << k << ".bmp";
-		//imwrite(ss.str(), mark2);
+		std::stringstream ss2(std::stringstream::in | std::stringstream::out);
+		ss2 << "tmp/debug_binary_remove_mark_" << k << ".bmp";
+		imwrite(ss2.str(), outmark);
 
 		mark2.copyTo(mark);
 	}
